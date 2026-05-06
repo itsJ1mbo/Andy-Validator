@@ -14,7 +14,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Src\main.cpp">
+    <ClCompile Include="..\..\src\AndyValidator_Core\main.cpp">
       <Filter>Archivos de codigo fuente</Filter>
     </ClCompile>
   </ItemGroup>

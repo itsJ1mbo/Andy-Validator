@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Src\main.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_Core\main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -19,7 +19,7 @@
     <ProjectGuid>{d14a534f-1a10-464c-bdac-801fea8a15ce}</ProjectGuid>
     <RootNamespace>AndyValidator</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>AndyValidator</ProjectName>
+    <ProjectName>AndyValidator_Core</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
