@@ -8,7 +8,7 @@
 class FBXReader
 {
 public:
-	static const FBXReader& instance();
+	static FBXReader& instance();
 
 	bool init() const;
 	void readModels();

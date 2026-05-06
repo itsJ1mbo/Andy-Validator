@@ -1,8 +1,10 @@
 #include "AndyValidator_Core/FBXReader.h"
+#include <iostream>
+#include <format>
 
 namespace fs = std::filesystem;
 
-const FBXReader& FBXReader::instance()
+FBXReader& FBXReader::instance()
 {
     if (!_instance)
     {
@@ -30,6 +32,9 @@ void FBXReader::readModels()
     {
         if (file.is_regular_file() && file.path().extension() == ".fbx")
         {
+#if _DEBUG
+            std::cout << std::format("FBX {} registrado con exito\n", file.path().filename().string());
+#endif
             _fbxPaths.push_back(file.path().string());
         }
     }
@@ -37,7 +42,7 @@ void FBXReader::readModels()
 
 bool FBXReader::initDirectory()
 {
-    _path = "../../FBXs";
+    _path = "..\\..\\FBXs";
 
     if (fs::exists(_path) && fs::is_directory(_path))
     {

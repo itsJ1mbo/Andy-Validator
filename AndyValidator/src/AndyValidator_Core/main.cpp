@@ -11,6 +11,8 @@ int main() {
         return 1;
     }
 
+    FBXReader::instance().readModels();
+
     while (!Window::instance().shouldWindowClose()) {
         Window::instance().updateWindow();
     }

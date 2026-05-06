@@ -2,9 +2,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "dearimgui/imgui.h"
-#include "dearImgui/backends/imgui_impl_glfw.h"
-#include "dearImgui/backends/imgui_impl_opengl2.h"
+//#include "dearimgui/imgui.h"
+//#include "dearImgui/backends/imgui_impl_glfw.h"
+//#include "dearImgui/backends/imgui_impl_opengl2.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -16,7 +16,7 @@ Window::Window(int width, int height) : _width(width), _height(height), _glfwWin
 
 }
 
-const Window& Window::instance() 
+Window& Window::instance() 
 {
     if (!_instance)
     {
@@ -97,7 +97,7 @@ void Window::processInput() const
         glfwSetWindowShouldClose(_glfwWindow, true);
 }
 
-void Window::render()
+void Window::render() const
 {
 
 }

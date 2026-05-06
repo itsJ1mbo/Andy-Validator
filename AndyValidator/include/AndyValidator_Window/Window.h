@@ -7,7 +7,7 @@ class GLFWwindow;
 class Window 
 {
 public:
-    static const Window& instance();
+    static Window& instance();
 
     bool init() const;
     void free() const;
@@ -24,7 +24,7 @@ private:
     Window& operator=(const Window&& in) = delete;
 
     void processInput() const;
-    void render();
+    void render() const;
     
     inline static std::unique_ptr<Window> _instance;
 
