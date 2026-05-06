@@ -4,7 +4,7 @@
 
 int main() {
     
-    if (!FBXReader::instance()->init()) {
+    if (!FBXReader::instance().init()) {
         return 1;
     }
 
