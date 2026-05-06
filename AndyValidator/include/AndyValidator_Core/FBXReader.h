@@ -11,6 +11,8 @@ public:
 
 	bool init();
 
+	void readModels();
+
 private:
 	FBXReader() = default;
 	~FBXReader() = default;
