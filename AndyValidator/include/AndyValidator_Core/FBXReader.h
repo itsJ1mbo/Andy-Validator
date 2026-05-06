@@ -3,6 +3,7 @@
 #include <memory>
 #include <string> 
 #include <filesystem>
+#include <list>
 
 class FBXReader
 {
@@ -23,5 +24,6 @@ private:
 
 	std::string _path;
 	std::filesystem::directory_iterator _directory;
+	std::list<std::string> _fbxPaths;
 };
 
