@@ -2,15 +2,20 @@
 
 namespace fs = std::filesystem;
 
+FBXReader* FBXReader::_instance = nullptr;
+
 FBXReader* FBXReader::instance()
 {
-    return _instance.get();
+    if (!_instance)
+    {
+        _instance = new FBXReader();
+    }
+
+    return _instance;
 }
 
 bool FBXReader::init()
 {
-    _instance = std::make_unique<FBXReader>();
-
     if (_instance) 
     {
         return _instance->initDirectory();
@@ -25,7 +30,8 @@ void FBXReader::readModels()
 {
     for (const auto& archivo : _directory) 
     {
-        if (archivo.is_regular_file() && archivo.path().extension() == ".fbx") {
+        if (archivo.is_regular_file() && archivo.path().extension() == ".fbx") 
+        {
             _fbxPaths.push_back(archivo.path().string());
         }
     }
