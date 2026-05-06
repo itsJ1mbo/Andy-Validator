@@ -4,9 +4,9 @@
 
 int main() {
     
-    if (!FBXReader::instance().init()) {
+    /*if (!FBXReader::instance().init()) {
         return 1;
-    }
+    }*/
 
     /*for (const auto& archivo : fs::directory_iterator(rutaCarpeta)) {
 
@@ -31,6 +31,8 @@ int main() {
     }*/
 
     Window* ventanaEpica = new Window();
+
+    ventanaEpica->initWindow();
 
     while (!ventanaEpica->shouldWindowClose()) {
         ventanaEpica->updateWindow();
