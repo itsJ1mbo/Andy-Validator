@@ -26,6 +26,6 @@ private:
 
 	std::string _path;
 	std::filesystem::directory_iterator _directory;
-	std::list<std::string> _fbxPaths;
+	std::list <std::filesystem::directory_entry> _fbxPaths;
 };
 
