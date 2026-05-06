@@ -1,5 +1,6 @@
 #include <iostream>
-#include "FBXReader.h"
+#include "AndyValidator_Core/FBXReader.h"
+#include "AndyValidator_Window/Window.h"
 
 int main() {
     
@@ -28,6 +29,14 @@ int main() {
     else {
         cout << "\nNo hay .fbx en la carpeta.\n";
     }*/
+
+    Window* ventanaEpica = new Window();
+
+    while (!ventanaEpica->shouldWindowClose()) {
+        ventanaEpica->updateWindow();
+    }
+
+    delete ventanaEpica;
 
     return 0;
 }
