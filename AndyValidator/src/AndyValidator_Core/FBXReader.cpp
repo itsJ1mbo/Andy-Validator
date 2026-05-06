@@ -37,7 +37,7 @@ void FBXReader::readModels()
 
 bool FBXReader::initDirectory()
 {
-    _path = "./FBXs";
+    _path = "../../FBXs";
 
     if (fs::exists(_path) && fs::is_directory(_path))
     {

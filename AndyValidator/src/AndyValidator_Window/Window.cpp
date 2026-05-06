@@ -8,12 +8,34 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-Window::Window(int width, int height) : _width(width), _height(height)
+Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr)
 {
 
 }
 
-Window::~Window()
+const Window& Window::instance() 
+{
+    if (!_instance)
+    {
+        _instance = std::unique_ptr<Window>(new Window());
+    }
+
+    return *_instance;
+}
+
+bool Window::init() const
+{
+    if (_instance) 
+    {
+        return _instance->initWindow();
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void Window::free() const
 {
     glfwDestroyWindow(_glfwWindow);
 }
@@ -45,14 +67,16 @@ bool Window::initWindow()
 
     glViewport(0, 0, _width, _height);
     glfwSetFramebufferSizeCallback(_glfwWindow, framebuffer_size_callback);
+
+    return true;
 }
 
-bool Window::shouldWindowClose()
+bool Window::shouldWindowClose() const
 {
     return glfwWindowShouldClose(_glfwWindow);
 }
 
-void Window::updateWindow()
+void Window::updateWindow() const
 {
     processInput();
 
@@ -63,14 +87,14 @@ void Window::updateWindow()
     //eventos ventana
     glfwPollEvents();
 }
-
-void Window::processInput()
+ 
+void Window::processInput() const
 {
     if (glfwGetKey(_glfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(_glfwWindow, true);
 }
 
-void Window::Render()
+void Window::render()
 {
 
 }
