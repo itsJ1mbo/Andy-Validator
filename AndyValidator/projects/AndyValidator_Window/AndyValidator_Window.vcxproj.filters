@@ -18,6 +18,9 @@
     <ClCompile Include="..\..\src\AndyValidator_Window\Window.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_Window\glad.c">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AndyValidator_Window\Window.h">

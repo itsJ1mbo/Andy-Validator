@@ -148,6 +148,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\AndyValidator_Window\glad.c" />
     <ClCompile Include="..\..\src\AndyValidator_Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
