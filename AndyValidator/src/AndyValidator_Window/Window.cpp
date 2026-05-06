@@ -3,7 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "dearimgui/imgui.h"
-
+#include "dearImgui/backends/imgui_impl_glfw.h"
+#include "dearImgui/backends/imgui_impl_opengl2.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
