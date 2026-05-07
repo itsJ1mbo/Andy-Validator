@@ -47,7 +47,7 @@ void FBXReader::initDirectory()
 
     if (!fs::exists(_path) || !fs::is_directory(_path))
     {
-        std::cout << "No hay directorio de FBXs";
+        std::cout << "No hay directorio de FBXs\n";
     }
     else 
     {
@@ -56,7 +56,7 @@ void FBXReader::initDirectory()
 
         if (_directory == end)
         {
-            std::cout << "El directorio de FBXs esta vacio";
+            std::cout << "El directorio de FBXs esta vacio\n";
         }
     }
 }
