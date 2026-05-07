@@ -11,6 +11,7 @@
 *.sln.docstates
 *.env
 
+AndyValidator/dependencies/2020.3.9
 lib/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
