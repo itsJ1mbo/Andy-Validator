@@ -2,7 +2,7 @@
 
 #include <memory>
 
-class GLFWwindow;
+struct GLFWwindow;
 
 class Window 
 {
@@ -25,6 +25,8 @@ private:
 
     void processInput() const;
     void render() const;
+    void initImgui() const;
+    void renderImgui() const;
     
     inline static std::unique_ptr<Window> _instance;
 
