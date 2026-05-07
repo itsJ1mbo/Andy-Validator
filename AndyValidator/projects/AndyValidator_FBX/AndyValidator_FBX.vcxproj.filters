@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\Prueba.cpp">
+    <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>

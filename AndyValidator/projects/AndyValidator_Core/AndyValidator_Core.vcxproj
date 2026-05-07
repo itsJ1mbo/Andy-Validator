@@ -18,6 +18,9 @@
     <ClInclude Include="..\..\include\AndyValidator_Core\FBXReader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AndyValidator_FBX\AndyValidator_FBX.vcxproj">
+      <Project>{17aeeee7-2d47-4f0c-8b21-8e57f2c2bfc6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\AndyValidator_Window\AndyValidator_Window.vcxproj">
       <Project>{b0ea7812-85e2-4479-ac51-b1d95d1e6c1c}</Project>
     </ProjectReference>
@@ -75,14 +78,14 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)dependencies\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)dependencies\2020.3.9\include\;$(SolutionDir)dependencies\</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>AndyValidator_Window_debug.lib;opengl32.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\glfw\;$(SolutionDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>AndyValidator_Window_debug.lib;opengl32.lib;glfw3_mt.lib;libfbxsdk-mt.lib;libxml2-mt.lib;alembic-mt.lib;zlib-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\2020.3.9\lib\x64\debug\;$(SolutionDir)dependencies\glfw\;$(SolutionDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -94,14 +97,14 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)dependencies\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)dependencies\2020.3.9\include\;$(SolutionDir)dependencies\</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>AndyValidator_Window.lib;opengl32.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\glfw\;$(SolutionDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>AndyValidator_Window.lib;opengl32.lib;glfw3_mt.lib;libfbxsdk-mt.lib;libxml2-mt.lib;alembic-mt.lib;zlib-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\glfw\;$(SolutionDir)dependencies\2020.3.9\lib\x64\release\;$(SolutionDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

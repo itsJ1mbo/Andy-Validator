@@ -3,26 +3,25 @@
 #include <string> 
 #include <filesystem>
 #include <list>
-#include <memory>
 
 class FBXReader
 {
 public:
-	static FBXReader& instance();
-
-	bool init() const;
+	FBXReader();
 	void readModels();
 
+	std::list<std::string> getModelPaths() const
+	{
+		std::list<std::string> paths;
+		for (const auto& entry : _fbxEntries)
+		{
+			paths.push_back(entry.path().string());
+		}
+		return paths;
+	}
+
 private:
-	FBXReader() = default;
-	FBXReader(const FBXReader& in) = delete;
-	FBXReader& operator=(const FBXReader& in) = delete;
-	FBXReader(const FBXReader&& in) = delete;
-	FBXReader& operator=(const FBXReader&& in) = delete;
-
 	void initDirectory();
-
-	inline static std::unique_ptr<FBXReader> _instance;
 
 	std::string _path;
 	std::filesystem::directory_iterator _directory;

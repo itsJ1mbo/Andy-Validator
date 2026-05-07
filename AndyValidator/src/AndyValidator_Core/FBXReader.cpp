@@ -4,27 +4,9 @@
 
 namespace fs = std::filesystem;
 
-FBXReader& FBXReader::instance()
+FBXReader::FBXReader()
 {
-    if (!_instance)
-    {
-        _instance = std::unique_ptr<FBXReader>(new FBXReader());
-    }
-
-    return *_instance;
-}
-
-bool FBXReader::init() const
-{
-    if (_instance) 
-    {
-        _instance->initDirectory();
-        return true;
-    }
-    else 
-    {
-        return false;
-    }
+	initDirectory();
 }
 
 void FBXReader::readModels()
