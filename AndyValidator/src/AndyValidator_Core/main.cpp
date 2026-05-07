@@ -4,14 +4,14 @@
 
 int main() {
     
-    //if (!FBXReader::instance().init()) {
-    //    return 1;
-    //}
+    if (!FBXReader::instance().init()) {
+        return 1;
+    }
     if (!Window::instance().init()) {
         return 1;
     }
 
-    //FBXReader::instance().readModels();
+    FBXReader::instance().readModels();
 
     while (!Window::instance().shouldWindowClose()) {
         Window::instance().updateWindow();

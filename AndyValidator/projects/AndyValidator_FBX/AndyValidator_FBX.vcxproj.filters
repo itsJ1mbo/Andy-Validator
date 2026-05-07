@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="U:\hlocal\Andy-Validator\AndyValidator\include\AndyValidator_FBX\Prueba.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="U:\hlocal\Andy-Validator\AndyValidator\src\AndyValidator_FBX\Prueba.cpp">
+    <ClCompile Include="..\..\src\AndyValidator_FBX\Prueba.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
