@@ -27,7 +27,10 @@ bool FBX::init()
 
 void FBX::free() const
 {
-    _scene->Destroy();
+	for (const auto scene : _scene)
+	{
+		scene->Destroy();
+	}
     _importer->Destroy();
     _ioSettings->Destroy();
     _sdkManager->Destroy();
@@ -57,30 +60,28 @@ bool FBX::initSdk()
         return false;
     }
 
-    _scene = FbxScene::Create(_sdkManager, "Scene");
-    if (!_scene)
-    {
-        std::cout << "Error al crear la escena del SDK de FBX\n";
-        return false;
-    }
-
-
     return true;
 }
 
-bool FBX::import(const std::list<std::string>& filePaths) const
+void FBX::import(const std::string& file)
 {
-    if (!_importer->Initialize(filePaths.back().c_str(), -1, _sdkManager->GetIOSettings()))
-    {
-        std::cout << std::format("Error al inicializar el importador del SDK de FBX: {}", _importer->GetStatus().GetErrorString());
-        return false;
-    }
+	if (!_importer->Initialize(file.c_str(), -1, _sdkManager->GetIOSettings()))
+	{
+		std::cout << std::format("Error al inicializar el archivo FBX: {}, {}", file, _importer->GetStatus().GetErrorString());
+        return;
+	}
 
-    if (!_importer->Import(_scene))
-    {
-	    std::cout << std::format("Error al importar la escena del SDK de FBX: {}", _importer->GetStatus().GetErrorString());
-		return false;
-    }
+	FbxScene* scene = FbxScene::Create(_sdkManager, "Scene");
+	if (!scene)
+	{
+		std::cout << "Error al crear la escena del SDK de FBX\n";
+        return;
+	}
 
-    return true;
+	if (!_importer->Import(scene))
+	{
+		std::cout << std::format("Error al importar la escena del SDK de FBX: {}", _importer->GetStatus().GetErrorString());
+        return;
+	}
+	_scene.push_back(scene);
 }

@@ -1,6 +1,7 @@
 #include "AndyValidator_Core/FBXReader.h"
 #include <iostream>
 #include <format>
+#include "AndyValidator_FBX/FBX.h"
 
 namespace fs = std::filesystem;
 
@@ -19,6 +20,7 @@ void FBXReader::readModels()
             std::cout << std::format("FBX \"{}\" registrado con exito\n", file.path().filename().string());
 #endif
             _fbxEntries.push_back(file);
+            FBX::instance().import(file.path().string());
         }
     }
 }

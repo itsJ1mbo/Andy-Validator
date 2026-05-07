@@ -16,9 +16,6 @@ int main()
     const std::unique_ptr<FBXReader> fbxReader = std::make_unique<FBXReader>();
 
     fbxReader->readModels();
-    if (!FBX::instance().import(fbxReader->getModelPaths())) {
-        return 1;
-    }
 
     while (!Window::instance().shouldWindowClose()) {
         Window::instance().updateWindow();

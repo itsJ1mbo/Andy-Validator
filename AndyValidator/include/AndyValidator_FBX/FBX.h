@@ -12,7 +12,7 @@ public:
 	bool init();
 	void free() const;
 
-	bool import(const std::list<std::string>& filePaths) const;
+	void import(const std::string& file);
 
 private:
 	FBX() = default;
@@ -28,6 +28,6 @@ private:
 	FbxManager* _sdkManager;
 	FbxIOSettings* _ioSettings;
 	FbxImporter* _importer;
-	FbxScene* _scene;
+	std::list<FbxScene*> _scene;
 };
 
