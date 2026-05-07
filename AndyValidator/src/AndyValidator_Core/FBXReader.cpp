@@ -34,7 +34,7 @@ void FBXReader::readModels()
         if (file.is_regular_file() && file.path().extension() == ".fbx")
         {
 #if _DEBUG
-            std::cout << std::format("FBX {} registrado con exito\n", file.path().filename().string());
+            std::cout << std::format("FBX \"{}\" registrado con exito\n", file.path().filename().string());
 #endif
             _fbxPaths.push_back(file);
         }
