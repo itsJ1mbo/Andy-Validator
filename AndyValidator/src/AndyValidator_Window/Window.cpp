@@ -47,9 +47,9 @@ void Window::free() const
 bool Window::initWindow()
 {
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     //Crear ventana
@@ -57,7 +57,7 @@ bool Window::initWindow()
 
     if (_glfwWindow == NULL)
     {
-        std::cout << "La ventana se ha cagado encima";
+        std::cout << "La ventana se ha cagado encima\n";
         glfwTerminate();
         return false;
     }
@@ -65,7 +65,7 @@ bool Window::initWindow()
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        std::cout << "Failed to initialize GLAD\n";
         return false;
     }
 
@@ -90,10 +90,8 @@ void Window::updateWindow() const
 
 
     //render imgui
-    renderImgui();
+    render();
 
-    //el back buffer pasa a ser el front buffer (opengl funciona con dos bufferes de colores, el que esta (front) y al que se le aplican todos los comandos y tal (back))
-    glfwSwapBuffers(_glfwWindow);
     //eventos ventana
     glfwPollEvents();
 }
@@ -106,7 +104,10 @@ void Window::processInput() const
 
 void Window::render() const
 {
+    renderImgui();
 
+    //el back buffer pasa a ser el front buffer (opengl funciona con dos bufferes de colores, el que esta (front) y al que se le aplican todos los comandos y tal (back))
+    glfwSwapBuffers(_glfwWindow);
 }
 
 void Window::initImgui() const
