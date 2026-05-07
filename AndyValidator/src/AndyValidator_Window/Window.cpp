@@ -46,6 +46,56 @@ void Window::free() const
 
 bool Window::initWindow()
 {
+    if (!initGlfw()) {
+        std::cout << "Error inicializando GLFW\n";
+        return false;
+    }
+
+    if (!initImgui()) {
+        std::cout << "Error inicializando dearImgui\n";
+        return false;
+    }
+
+    return true;
+}
+
+bool Window::shouldWindowClose() const
+{
+    return glfwWindowShouldClose(_glfwWindow);
+}
+
+void Window::updateWindow() const
+{
+    processInput();
+
+    //cargar modelo o algo yo que se no se como se hace eso
+
+
+    //render imgui
+    render();
+
+    //eventos ventana
+    glfwPollEvents();
+}
+ 
+void Window::processInput() const
+{
+    if (glfwGetKey(_glfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(_glfwWindow, true);
+}
+
+void Window::render() const
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    renderImgui();
+
+    //el back buffer pasa a ser el front buffer (opengl funciona con dos bufferes de colores, el que esta (front) y al que se le aplican todos los comandos y tal (back))
+    glfwSwapBuffers(_glfwWindow);
+}
+
+bool Window::initGlfw()
+{
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -72,52 +122,19 @@ bool Window::initWindow()
     glViewport(0, 0, _width, _height);
     glfwSetFramebufferSizeCallback(_glfwWindow, framebuffer_size_callback);
 
-    initImgui();
-
     return true;
 }
 
-bool Window::shouldWindowClose() const
-{
-    return glfwWindowShouldClose(_glfwWindow);
-}
-
-void Window::updateWindow() const
-{
-    processInput();
-
-    //cargar modelo o algo yo que se
-
-
-    //render imgui
-    render();
-
-    //eventos ventana
-    glfwPollEvents();
-}
- 
-void Window::processInput() const
-{
-    if (glfwGetKey(_glfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(_glfwWindow, true);
-}
-
-void Window::render() const
-{
-    renderImgui();
-
-    //el back buffer pasa a ser el front buffer (opengl funciona con dos bufferes de colores, el que esta (front) y al que se le aplican todos los comandos y tal (back))
-    glfwSwapBuffers(_glfwWindow);
-}
-
-void Window::initImgui() const
+bool Window::initImgui() const
 {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
+    if (ImGui::CreateContext() == nullptr)
+        return false;
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.IniFilename = nullptr; //porque nos la pela la persistencia de la ventana
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -125,7 +142,10 @@ void Window::initImgui() const
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(_glfwWindow, true);
+
     ImGui_ImplOpenGL2_Init();
+
+    return true;
 }
 
 void Window::renderImgui() const

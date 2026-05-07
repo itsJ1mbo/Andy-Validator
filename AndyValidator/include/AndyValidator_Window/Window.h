@@ -25,7 +25,8 @@ private:
 
     void processInput() const;
     void render() const;
-    void initImgui() const;
+    bool initGlfw();
+    bool initImgui() const;
     void renderImgui() const;
     
     inline static std::unique_ptr<Window> _instance;
