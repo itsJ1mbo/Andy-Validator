@@ -66,16 +66,16 @@ bool Window::shouldWindowClose() const
 
 void Window::updateWindow() const
 {
+    //eventos ventana
+    glfwPollEvents();
+
     processInput();
 
     //cargar modelo o algo yo que se no se como se hace eso
 
 
-    //render imgui
+    //render
     render();
-
-    //eventos ventana
-    glfwPollEvents();
 }
  
 void Window::processInput() const
@@ -86,8 +86,10 @@ void Window::processInput() const
 
 void Window::render() const
 {
-    glClear(GL_COLOR_BUFFER_BIT);
 
+    //llamar al render del modelo o algo no se como va esto
+
+    //renderizamos las ventanas de imgui
     renderImgui();
 
     //el back buffer pasa a ser el front buffer (opengl funciona con dos bufferes de colores, el que esta (front) y al que se le aplican todos los comandos y tal (back))
@@ -156,45 +158,11 @@ void Window::renderImgui() const
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    bool show_demo_window = true;
-    bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-    if(show_demo_window)
-        ImGui::ShowDemoWindow(&show_demo_window);
 
-    // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-    {
-        static float f = 0.0f;
-        static int counter = 0;
-
-        ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-        ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-        ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-        ImGui::Checkbox("Another Window", &show_another_window);
-
-        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-        ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-        if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-            counter++;
-        ImGui::SameLine();
-        ImGui::Text("counter = %d", counter);
-
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
-    }
-
-    // 3. Show another simple window.
-    if (show_another_window)
-    {
-        ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-        ImGui::Text("Hello from another window!");
-        if (ImGui::Button("Close Me"))
-            show_another_window = false;
-        ImGui::End();
-    }
+    //pruebita 
+    static bool abierto = true;
+    panelCustomPrueba(&abierto);
 
     // Rendering
     ImGui::Render();
@@ -211,4 +179,54 @@ void Window::renderImgui() const
     //glUseProgram(0);
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
     //glUseProgram(last_program);
+}
+
+void Window::panelCustomPrueba(bool* open) const
+{
+    //lo que estoy siguiendo es ShowExampleAppLayout de imgui_demo.h
+
+    //primero le damos tamaño, usamos el mainviewport (en vez de _width y _height) 
+    //junto con la flag de always para que este escalado se aplique siempre y no solo una vez al principio
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetMainViewport()->Size.x/2, ImGui::GetMainViewport()->Size.y), ImGuiCond_Always);
+
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+
+    ImGuiWindowFlags flags = 0;
+    flags |= ImGuiWindowFlags_NoDecoration;
+
+    //el booleano controla si la ventana está abierta o no, con ponerlo a false se cierra sola la ventana y tal
+    if (ImGui::Begin("Prueba", open, flags))
+    {
+
+        //ehhhh no se muy bien que hace todo este if, con o sin el todo esta igual
+        /*if (ImGui::BeginMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::MenuItem("Close", "Ctrl+W")) { *open = false; }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMenuBar();
+        }*/
+
+        // todo esto hace un subpanel con una lista de cosas
+        static int selected = 0;
+        {
+            ImGui::BeginChild("left pane", ImVec2(150, 0), ImGuiChildFlags_Border);
+            for (int i = 0; i < 10 ; i++)
+            {
+                // FIXME: Good candidate to use ImGuiSelectableFlags_SelectOnNav
+                char label[128];
+                sprintf_s(label, "modelo%d.fbx", i);
+                if (ImGui::Selectable(label, selected == i))
+                    selected = i;
+            }
+            ImGui::EndChild();
+        }
+        //huh? no se que hace
+        ImGui::SameLine();
+    }
+
+    //SIEMPRE hay que llamar a un end por cada begin
+    ImGui::End(); 
 }

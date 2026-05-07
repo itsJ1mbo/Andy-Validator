@@ -28,6 +28,8 @@ private:
     bool initGlfw();
     bool initImgui() const;
     void renderImgui() const;
+
+    void panelCustomPrueba(bool* open) const;
     
     inline static std::unique_ptr<Window> _instance;
 
