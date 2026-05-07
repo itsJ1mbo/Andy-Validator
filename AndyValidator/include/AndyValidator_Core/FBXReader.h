@@ -20,7 +20,7 @@ private:
 	FBXReader(const FBXReader&& in) = delete;
 	FBXReader& operator=(const FBXReader&& in) = delete;
 
-	bool initDirectory();
+	void initDirectory();
 
 	inline static std::unique_ptr<FBXReader> _instance;
 

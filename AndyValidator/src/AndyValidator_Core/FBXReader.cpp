@@ -18,7 +18,8 @@ bool FBXReader::init() const
 {
     if (_instance) 
     {
-        return _instance->initDirectory();
+        _instance->initDirectory();
+        return true;
     }
     else 
     {
@@ -40,18 +41,22 @@ void FBXReader::readModels()
     }
 }
 
-bool FBXReader::initDirectory()
+void FBXReader::initDirectory()
 {
     _path = "..\\..\\..\\FBXs";
 
-    if (fs::exists(_path) && fs::is_directory(_path))
+    if (!fs::exists(_path) || !fs::is_directory(_path))
+    {
+        std::cout << "No hay directorio de FBXs";
+    }
+    else 
     {
         _directory = fs::directory_iterator(_path);
-    }
-    else
-    {
-        std::log << ""
-    }
+        fs::directory_iterator end;
 
-    return true;
+        if (_directory == end)
+        {
+            std::cout << "El directorio de FBXs esta vacio";
+        }
+    }
 }
