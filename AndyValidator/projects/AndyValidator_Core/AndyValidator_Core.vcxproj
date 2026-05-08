@@ -11,11 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\AndyValidator_Core\FBXReader.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_Core\Loader.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_Core\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\include\AndyValidator_Core\FBXReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AndyValidator_FBX\AndyValidator_FBX.vcxproj">
@@ -24,6 +21,9 @@
     <ProjectReference Include="..\AndyValidator_Window\AndyValidator_Window.vcxproj">
       <Project>{b0ea7812-85e2-4479-ac51-b1d95d1e6c1c}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\AndyValidator_Core\Loader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

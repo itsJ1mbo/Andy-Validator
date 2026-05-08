@@ -17,12 +17,12 @@
     <ClCompile Include="..\..\src\AndyValidator_Core\main.cpp">
       <Filter>Archivos de codigo fuente</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_Core\FBXReader.cpp">
+    <ClCompile Include="..\..\src\AndyValidator_Core\Loader.cpp">
       <Filter>Archivos de codigo fuente</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\AndyValidator_Core\FBXReader.h">
+    <ClInclude Include="..\..\include\AndyValidator_Core\Loader.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

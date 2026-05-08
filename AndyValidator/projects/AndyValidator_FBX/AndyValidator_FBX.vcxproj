@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\Validation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp" />

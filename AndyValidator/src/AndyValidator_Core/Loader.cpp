@@ -1,16 +1,16 @@
-#include "AndyValidator_Core/FBXReader.h"
+#include "AndyValidator_Core/Loader.h"
 #include <iostream>
 #include <format>
 #include "AndyValidator_FBX/FBX.h"
 
 namespace fs = std::filesystem;
 
-FBXReader::FBXReader()
+Loader::Loader()
 {
 	initDirectory();
 }
 
-void FBXReader::readModels()
+void Loader::readModels()
 {
     for (const auto& file : _directory) 
     {
@@ -25,7 +25,7 @@ void FBXReader::readModels()
     }
 }
 
-void FBXReader::initDirectory()
+void Loader::initDirectory()
 {
     _path = "..\\..\\FBXs";
 

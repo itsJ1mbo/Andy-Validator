@@ -4,10 +4,11 @@
 #include <filesystem>
 #include <list>
 
-class FBXReader
+class Loader
 {
 public:
-	FBXReader();
+	Loader();
+
 	void readModels();
 
 	std::list<std::string> getModelPaths() const

@@ -1,4 +1,4 @@
-#include "AndyValidator_Core/FBXReader.h"
+#include "AndyValidator_Core/Loader.h"
 #include "AndyValidator_Window/Window.h"
 #include "AndyValidator_FBX/FBX.h"
 
@@ -13,9 +13,9 @@ int main()
         return 1;
     }
 
-    const std::unique_ptr<FBXReader> fbxReader = std::make_unique<FBXReader>();
+    const std::unique_ptr<Loader> loader = std::make_unique<Loader>();
 
-    fbxReader->readModels();
+    loader->readModels();
 
     while (!Window::instance().shouldWindowClose()) {
         Window::instance().updateWindow();
