@@ -1,7 +1,12 @@
 #include "AndyValidator_FBX/ValidatorManager.h"
 #include "AndyValidator_FBX/Validation.h"
 
-void ValidatorManager::startValidationTask(const std::vector<FbxScene*>& fbxs)
+ValidatorManager::ValidatorManager()
+{
+    // _validations.push_back(std::make_unique<DummyValidation>());
+}
+
+void ValidatorManager::startValidationTask(const std::vector<std::string>& fbxs, const std::function<FbxScene*(const std::string&)>& loader)
 {
     if (_isRunning) return;
 
@@ -14,25 +19,46 @@ void ValidatorManager::startValidationTask(const std::vector<FbxScene*>& fbxs)
         _resultsBuffer.clear();
     }
 
-    _thread = std::jthread(&ValidatorManager::validationTask, this, fbxs);
+    _thread = std::jthread([this, fbxs, loader](const std::stop_token& stopToken) {
+        this->validationTask(stopToken, fbxs, loader);
+    });
 }
 
-void ValidatorManager::validationTask(const std::vector<FbxScene*>& fbxs)
+void ValidatorManager::stopValidationTask()
 {
-    for (const auto& model : fbxs) {
+    if (_isRunning)
+    {
+        _thread.request_stop();
+        _thread.join();
+	}
+}
 
-        ValidationResults fileResults;
+void ValidatorManager::validationTask(const std::stop_token& stopToken, const std::vector<std::string>& fbxs, const std::function<FbxScene*(const std::string&)>& loader)
+{
+    for (size_t i = 0; i < fbxs.size(); ++i) 
+    {
+        if (stopToken.stop_requested()) break;
 
-        for (const auto& validation : _validations)
+		FbxScene* model = loader(fbxs[i]);
+
+		if (model)
         {
-            validation->validate(model, fileResults);
-        }
+	        ValidationResults fileResults;
+            fileResults.index = i;
 
-		// Seccion critica bloqueante
-        {
-            std::scoped_lock lock(_mutex);
-            _resultsBuffer.push_back(fileResults);
-            _hasNewData = true;
+	        for (const auto& validation : _validations)
+	        {
+	        	validation->validate(model, fileResults);
+	        }
+
+        	// Seccion critica bloqueante
+	        {
+	        	std::scoped_lock lock(_mutex);
+	        	_resultsBuffer.push_back(fileResults);
+	        	_hasNewData = true;
+	        }
+
+            model->Destroy();
         }
     }
 

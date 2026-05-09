@@ -1,8 +1,11 @@
 #include "AndyValidator_FBX/FBX.h"
+#include "AndyValidator_FBX/ValidatorManager.h"
 
 #include <format>
 #include <iostream>
 
+FBX::~FBX() = default;
+	
 FBX& FBX::instance()
 {
     if (!_instance)
@@ -17,6 +20,7 @@ bool FBX::init()
 {
 	if (_instance)
     {
+		_manager = std::make_unique<ValidatorManager>();
         return initSdk();
     }
     else
@@ -27,10 +31,7 @@ bool FBX::init()
 
 void FBX::free() const
 {
-	for (const auto scene : _scene)
-	{
-		scene->Destroy();
-	}
+    _manager->stopValidationTask();
     _importer->Destroy();
     _ioSettings->Destroy();
     _sdkManager->Destroy();
@@ -63,25 +64,41 @@ bool FBX::initSdk()
     return true;
 }
 
-void FBX::import(const std::string& file)
+FbxScene* FBX::import(const std::string& file) const
 {
 	if (!_importer->Initialize(file.c_str(), -1, _sdkManager->GetIOSettings()))
 	{
 		std::cout << std::format("Error al inicializar el archivo FBX: {}, {}", file, _importer->GetStatus().GetErrorString());
-        return;
+        return nullptr;
 	}
 
 	FbxScene* scene = FbxScene::Create(_sdkManager, "Scene");
 	if (!scene)
 	{
 		std::cout << "Error al crear la escena del SDK de FBX\n";
-        return;
+        return nullptr;
 	}
 
 	if (!_importer->Import(scene))
 	{
 		std::cout << std::format("Error al importar la escena del SDK de FBX: {}", _importer->GetStatus().GetErrorString());
-        return;
+        scene->Destroy();
+        return nullptr;
 	}
-	_scene.push_back(scene);
+	
+    return scene;
+}
+
+void FBX::start(const std::vector<std::string>& files) const
+{
+    auto loader = [this](const std::string& ruta) -> FbxScene* {
+        return this->import(ruta);
+    };
+
+    _manager->startValidationTask(files, loader);
+}
+
+std::vector<ValidationResults> FBX::checkNewResults() const
+{
+    return _manager->checkNewResults();
 }

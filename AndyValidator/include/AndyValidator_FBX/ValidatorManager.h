@@ -5,21 +5,24 @@
 #include <mutex>
 #include <atomic>
 #include <thread>
+#include <stop_token>
+#include <functional>
 
-class FbxScene;
-class Validation;
-struct ValidationResults;
+#include "AndyValidator_FBX/Validation.h"
 
 class ValidatorManager 
 {
 public:
-    void startValidationTask(const std::vector<FbxScene*>& fbxs);
+    ValidatorManager();
+
+    void startValidationTask(const std::vector<std::string>& fbxs, const std::function<FbxScene*(const std::string&)>& loader);
+    void stopValidationTask();
     bool isRunning() const { return _isRunning; }
 
     std::vector<ValidationResults> checkNewResults();
 
 private:
-    void validationTask(const std::vector<FbxScene*>& fbxs);
+    void validationTask(const std::stop_token& stopToken, const std::vector<std::string>& fbxs, const std::function<FbxScene*(const std::string&)>& loader);
 
     std::vector<std::unique_ptr<Validation>> _validations;
 

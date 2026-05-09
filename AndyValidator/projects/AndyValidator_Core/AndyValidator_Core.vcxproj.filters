@@ -20,9 +20,15 @@
     <ClCompile Include="..\..\src\AndyValidator_Core\Loader.cpp">
       <Filter>Archivos de codigo fuente</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_Core\Application.cpp">
+      <Filter>Archivos de codigo fuente</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AndyValidator_Core\Loader.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_Core\Application.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

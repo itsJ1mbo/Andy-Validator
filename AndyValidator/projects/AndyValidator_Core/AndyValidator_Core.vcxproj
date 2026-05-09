@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\AndyValidator_Core\Application.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_Core\Loader.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_Core\main.cpp" />
   </ItemGroup>
@@ -23,6 +24,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\AndyValidator_Core\Application.h" />
     <ClInclude Include="..\..\include\AndyValidator_Core\Loader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

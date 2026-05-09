@@ -1,7 +1,6 @@
 #include "AndyValidator_Core/Loader.h"
 #include <iostream>
 #include <format>
-#include "AndyValidator_FBX/FBX.h"
 
 namespace fs = std::filesystem;
 
@@ -19,8 +18,7 @@ void Loader::readModels()
 #if _DEBUG
             std::cout << std::format("FBX \"{}\" registrado con exito\n", file.path().filename().string());
 #endif
-            _fbxEntries.push_back(file);
-            FBX::instance().import(file.path().string());
+            _fbxEntries.push_back(file.path().string());
         }
     }
 }
@@ -41,6 +39,10 @@ void Loader::initDirectory()
         if (_directory == end)
         {
             std::cout << "El directorio de FBXs esta vacio\n";
+        }
+        else
+        {
+            readModels();
         }
     }
 }

@@ -13,12 +13,7 @@ public:
 
 	std::vector<std::string> getModelPaths() const
 	{
-		std::vector<std::string> paths;
-		for (const auto& entry : _fbxEntries)
-		{
-			paths.push_back(entry.path().string());
-		}
-		return paths;
+		return _fbxEntries;
 	}
 
 private:
@@ -26,6 +21,6 @@ private:
 
 	std::string _path;
 	std::filesystem::directory_iterator _directory;
-	std::vector<std::filesystem::directory_entry> _fbxEntries;
+	std::vector<std::string> _fbxEntries;
 };
 

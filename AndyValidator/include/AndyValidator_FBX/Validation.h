@@ -1,9 +1,10 @@
 #pragma once
 
-class FbxScene;
+#include <fbxsdk.h>
 
 struct ValidationResults
 {
+	size_t index;
 	// bool validacionX
 	// bool validacionY
 	// bool validacionZ
