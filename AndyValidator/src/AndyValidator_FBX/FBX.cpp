@@ -1,5 +1,6 @@
 #include "AndyValidator_FBX/FBX.h"
 #include "AndyValidator_FBX/ValidatorManager.h"
+#include "AndyValidator_FBX/ImportManager.h"
 
 #include <format>
 #include <iostream>
@@ -20,7 +21,7 @@ bool FBX::init()
 {
 	if (_instance)
     {
-		_manager = std::make_unique<ValidatorManager>();
+		_validatorManager = std::make_unique<ValidatorManager>();
         return initSdk();
     }
     else
@@ -29,10 +30,10 @@ bool FBX::init()
     }
 }
 
-void FBX::free() const
+void FBX::free()
 {
-    _manager->stopValidationTask();
-    _importer->Destroy();
+    stop();
+
     _ioSettings->Destroy();
     _sdkManager->Destroy();
 }
@@ -42,63 +43,100 @@ bool FBX::initSdk()
     _sdkManager = FbxManager::Create();
     if (!_sdkManager)
     {
+#if _DEBUG
 		std::cout << "Error al crear el SDK de FBX\n" ;
+#endif
         return false;
     }
 
     _ioSettings = FbxIOSettings::Create(_sdkManager, IOSROOT);
 	if (!_ioSettings)
     {
+#if _DEBUG
         std::cout << "Error al crear las IOSettings del SDK de FBX\n";
+#endif
         return false;
     }
     _sdkManager->SetIOSettings(_ioSettings);
- 
-	_importer = FbxImporter::Create(_sdkManager, "");
-    if (!_importer)
-    {
-		std::cout << "Error al crear el importador del SDK de FBX\n";
-        return false;
-    }
 
     return true;
 }
 
-FbxScene* FBX::import(const std::string& file) const
+void FBX::processTask(const std::stop_token& stopToken, const std::vector<std::string>& files)
 {
-	if (!_importer->Initialize(file.c_str(), -1, _sdkManager->GetIOSettings()))
-	{
-		std::cout << std::format("Error al inicializar el archivo FBX: {}, {}", file, _importer->GetStatus().GetErrorString());
-        return nullptr;
-	}
+    for (size_t i = 0; i < files.size(); ++i)
+    {
+        if (stopToken.stop_requested()) break;
 
-	FbxScene* scene = FbxScene::Create(_sdkManager, "Scene");
-	if (!scene)
-	{
-		std::cout << "Error al crear la escena del SDK de FBX\n";
-        return nullptr;
-	}
+        FbxScene* model = _importManager->import(files[i], _sdkManager);
 
-	if (!_importer->Import(scene))
-	{
-		std::cout << std::format("Error al importar la escena del SDK de FBX: {}", _importer->GetStatus().GetErrorString());
-        scene->Destroy();
-        return nullptr;
-	}
-	
-    return scene;
+        if (model)
+        {
+            Results fileResults;
+            fileResults.index = i;
+
+            _validatorManager->runValidations(model, fileResults);
+
+			fileResults.model = _importManager->processModel(model, _sdkManager);
+
+#if _DEBUG
+			std::cout << std::format("Archivo {} procesado\n", files[i]);
+#endif
+
+            // Seccion critica bloqueante
+            {
+                std::scoped_lock lock(_mutex);
+                _resultsBuffer.push_back(fileResults);
+                _hasNewData = true;
+            }
+
+            model->Destroy();
+        }
+    }
 }
 
-void FBX::start(const std::vector<std::string>& files) const
+void FBX::start(const std::vector<std::string>& files)
 {
-    auto loader = [this](const std::string& ruta) -> FbxScene* {
-        return this->import(ruta);
-    };
+    if (_isRunning) return;
 
-    _manager->startValidationTask(files, loader);
+    _isRunning = true;
+    _hasNewData = false;
+
+    // Seccion critica bloqueante
+    {
+        std::scoped_lock lock(_mutex);
+        _resultsBuffer.clear();
+    }
+
+    _thread = std::jthread([this, files](const std::stop_token& stopToken) {
+        this->processTask(stopToken, files);
+    });
 }
 
-std::vector<ValidationResults> FBX::checkNewResults() const
+void FBX::stop()
 {
-    return _manager->checkNewResults();
+    if (_isRunning)
+    {
+        _thread.request_stop();
+        _thread.join();
+    }
+}
+
+std::vector<Results> FBX::checkNewResults()
+{
+    std::vector<Results> newResults;
+
+    if (_hasNewData)
+    {
+        // Seccion critica no bloqueante
+        if (_mutex.try_lock())
+        {
+            std::scoped_lock lock(std::adopt_lock, _mutex);
+
+            std::swap(newResults, _resultsBuffer);
+            _hasNewData = false;
+        }
+    }
+
+    return newResults;
 }

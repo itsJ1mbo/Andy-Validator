@@ -1,21 +1,13 @@
 #pragma once
 
 #include <fbxsdk.h>
-
-struct ValidationResults
-{
-	size_t index;
-	// bool validacionX
-	// bool validacionY
-	// bool validacionZ
-	// etc
-};
+#include <ModelData.h>
 
 class Validation
 {
 public:
 	virtual ~Validation() = default;
 
-	virtual void validate(const FbxScene* fbx, ValidationResults& results) = 0;
+	virtual void validate(const FbxScene* fbx, Results& results) = 0;
 };
 

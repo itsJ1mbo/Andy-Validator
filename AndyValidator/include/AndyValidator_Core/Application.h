@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-#include "AndyValidator_FBX/Validation.h"
+#include "ModelData.h"
 
 class Loader;
 
@@ -20,6 +20,6 @@ public:
 private:
 	std::unique_ptr<Loader> _loader;
 
-	std::vector<ValidationResults> _results;
+	std::vector<Results> _results;
 };
 

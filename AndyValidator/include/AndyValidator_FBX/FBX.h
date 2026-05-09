@@ -1,10 +1,14 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
-#include "AndyValidator_FBX/Validation.h"
+#include <fbxsdk.h>
 
+#include "ModelData.h"
+
+class ImportManager;
 class ValidatorManager;
 
 class FBX
@@ -14,10 +18,10 @@ public:
 	static FBX& instance();
 
 	bool init();
-	void free() const;
+	void free();
 
-	void start(const std::vector<std::string>& files) const;
-	std::vector<ValidationResults> checkNewResults() const;
+	void start(const std::vector<std::string>& files);
+	std::vector<Results> checkNewResults();
 
 private:
 	FBX() = default;
@@ -27,14 +31,22 @@ private:
 	FBX& operator=(const FBX&& in) = delete;
 
 	bool initSdk();
-	FbxScene* import(const std::string& file) const;
+	void processTask(const std::stop_token& stopToken, const std::vector<std::string>& files);
+	void stop();
 
 	inline static std::unique_ptr<FBX> _instance;
 
-	std::unique_ptr<ValidatorManager> _manager;
+	std::unique_ptr<ValidatorManager> _validatorManager;
+	std::unique_ptr<ImportManager> _importManager;
 
 	FbxManager* _sdkManager;
 	FbxIOSettings* _ioSettings;
-	FbxImporter* _importer;
+
+	std::jthread _thread;
+	std::mutex _mutex;
+	std::vector<Results> _resultsBuffer;
+
+	std::atomic<bool> _isRunning{ false };
+	std::atomic<bool> _hasNewData{ false };
 };
 
