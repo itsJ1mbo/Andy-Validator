@@ -13,9 +13,11 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\Validation.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\ValidatorManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_FBX\ValidatorManager.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

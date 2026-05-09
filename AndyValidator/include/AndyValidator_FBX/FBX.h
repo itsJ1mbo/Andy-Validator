@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <fbxsdk.h>
-#include <list>
+#include <vector>
 
 class FBX
 {
@@ -28,6 +28,6 @@ private:
 	FbxManager* _sdkManager;
 	FbxIOSettings* _ioSettings;
 	FbxImporter* _importer;
-	std::list<FbxScene*> _scene;
+	std::vector<FbxScene*> _scene;
 };
 

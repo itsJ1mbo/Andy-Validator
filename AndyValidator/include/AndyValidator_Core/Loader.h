@@ -2,7 +2,7 @@
 
 #include <string> 
 #include <filesystem>
-#include <list>
+#include <vector>
 
 class Loader
 {
@@ -11,9 +11,9 @@ public:
 
 	void readModels();
 
-	std::list<std::string> getModelPaths() const
+	std::vector<std::string> getModelPaths() const
 	{
-		std::list<std::string> paths;
+		std::vector<std::string> paths;
 		for (const auto& entry : _fbxEntries)
 		{
 			paths.push_back(entry.path().string());
@@ -26,6 +26,6 @@ private:
 
 	std::string _path;
 	std::filesystem::directory_iterator _directory;
-	std::list <std::filesystem::directory_entry> _fbxEntries;
+	std::vector<std::filesystem::directory_entry> _fbxEntries;
 };
 
