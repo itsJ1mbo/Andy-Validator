@@ -19,7 +19,7 @@ public:
     std::vector<ValidationResults> checkNewResults();
 
 private:
-    void workerTask(const std::vector<FbxScene*>& fbxs);
+    void validationTask(const std::vector<FbxScene*>& fbxs);
 
     std::vector<std::unique_ptr<Validation>> _validations;
 
