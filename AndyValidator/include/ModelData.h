@@ -42,5 +42,5 @@ struct Results
     size_t index;
     ModelData model;
     
-    bool prueba1 = false;
+    bool test1 = false;
 };
