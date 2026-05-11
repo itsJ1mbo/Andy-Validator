@@ -17,6 +17,7 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba1Validation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\Validation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\ValidatorManager.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\VertexValidation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AndyValidator_Core\Prueba1Validation.cpp" />
@@ -24,6 +25,7 @@
     <ClCompile Include="..\..\src\AndyValidator_FBX\ImportManager.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\PolygonValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\ValidatorManager.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_FBX\VertexValidation.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

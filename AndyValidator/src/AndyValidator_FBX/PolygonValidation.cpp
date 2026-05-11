@@ -5,7 +5,7 @@ void PolygonValidation::validate(const FbxScene* fbx, Results& results)
 {
     int totalPolygons = countPolygons(fbx->GetRootNode());
 
-    results.polygon = (totalPolygons <= FBX::instance().getConfig().polygons);  
+    results.polygon = (totalPolygons <= FBX::instance().getConfig().polygons);
 }
 
 int PolygonValidation::countPolygons(FbxNode* node)
