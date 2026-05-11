@@ -1,6 +1,5 @@
 #pragma once
 #include "Validation.h"
-#include <iostream>
 
 class PolygonValidation : public Validation
 {

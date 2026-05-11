@@ -1,7 +1,8 @@
 #pragma once
 
 #include <fbxsdk.h>
-#include <ModelData.h>
+
+#include "ModelData.h"
 
 class Validation
 {

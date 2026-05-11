@@ -1,8 +1,6 @@
 #pragma once
 #include "Validation.h"
 
-#include <iostream>
-
 class Prueba1Validation : public Validation
 {
 public:

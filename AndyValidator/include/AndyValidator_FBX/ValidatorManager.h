@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <fbxsdk.h>
+
 #include "ModelData.h"
 
 class Validation;
