@@ -95,10 +95,11 @@ void FBX::processTask(const std::stop_token& stopToken, const std::vector<std::s
     }
 }
 
-void FBX::start(const std::vector<std::string>& files)
+void FBX::start(const std::vector<std::string>& files, const Config config)
 {
     if (_isRunning) return;
 
+	_cfg = config;
     _isRunning = true;
     _hasNewData = false;
 

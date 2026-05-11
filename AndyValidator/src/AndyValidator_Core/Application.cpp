@@ -24,7 +24,7 @@ bool Application::init() const
 
 void Application::run()
 {
-    FBX::instance().start(_loader->getModelPaths());
+    FBX::instance().start(_loader->getModelPaths(), _loader->getConfig());
 
     while (!Window::instance().shouldWindowClose())
     {

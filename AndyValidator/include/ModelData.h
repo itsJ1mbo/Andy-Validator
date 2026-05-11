@@ -30,6 +30,12 @@ struct ModelData
     std::vector<MeshData> meshes;
 };
 
+struct Config
+{
+    int polygons = 10000;
+    bool unreal = false;
+};
+
 struct Results
 {
     size_t index;

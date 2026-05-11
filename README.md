@@ -6,6 +6,7 @@ Software de validacion de modelos 3D de formato FBX para videojuegos
 2. [Concept](#concept-art)
 3. [Arquitectura](#arquitectura)
 4. [Librerias](#clibrerias)
+5. [Terceros](#terceros)
 
 ## Instrucciones
 ### Instalación del FBX SDK
@@ -110,12 +111,22 @@ void Application::run()
     }
 }
 ```
+Lee de la misma carpeta un archivo validator.cfg que tiene datos dependientes del proyecto específico. El usuario debe cambiarlo segun la necesidad. Si no encunetra el archivo lo crea con valores por defecto
+```
+struct Config
+{
+    int polygons = 10000;
+    bool unreal = false;
+};
+```
 
 ## Librerias
 pum (y glm)
 
 ![Cuantas librerias hay en el proyecto?](dependencies.png)
 
+## Terceros
+El ejecutable final contiene el SDK de Autodesk® FBX® de forma estática. El uso de este SDK está sujeto a los términos de licencia de Autodesk. Nuestro código interactúa con este SDK pero es independiente de él.
 
 
 

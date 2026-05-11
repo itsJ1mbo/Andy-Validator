@@ -20,8 +20,13 @@ public:
 	bool init();
 	void free();
 
-	void start(const std::vector<std::string>& files);
+	void start(const std::vector<std::string>& files, const Config config);
+
 	std::vector<Results> checkNewResults();
+	Config getConfig() const
+	{
+		return _cfg;
+	}
 
 private:
 	FBX() = default;
@@ -48,5 +53,7 @@ private:
 
 	std::atomic<bool> _isRunning{ false };
 	std::atomic<bool> _hasNewData{ false };
+
+	Config _cfg;
 };
 
