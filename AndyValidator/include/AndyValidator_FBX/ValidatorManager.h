@@ -3,12 +3,16 @@
 #include <vector>
 #include <memory>
 
-#include "AndyValidator_FBX/Validation.h"
+#include <fbxsdk.h>
+#include "ModelData.h"
+
+class Validation;
 
 class ValidatorManager 
 {
 public:
     ValidatorManager();
+    ~ValidatorManager();
 
     void runValidations(const FbxScene* scene, Results& results) const;
 

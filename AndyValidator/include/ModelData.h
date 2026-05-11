@@ -34,8 +34,6 @@ struct Results
 {
     size_t index;
     ModelData model;
-    // bool validacionX
-    // bool validacionY
-    // bool validacionZ
-    // etc
+    
+    bool prueba1 = false;
 };
