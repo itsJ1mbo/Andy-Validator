@@ -39,7 +39,8 @@ void Application::run()
             _results[result.index] = result;
             std::cout << "\n[Test1] Resultado: " << (result.test1 ? "Aprobado" : "Suspenso");
             std::cout << "\n[Polygon] Resultado: " << (result.polygon ? "Aprobado" : "Suspenso");
-            std::cout << "\n[3V Faces] Resultado: " << (result.polygon ? "Aprobado" : "Suspenso");
+            std::cout << "\n[3V Faces] Resultado: " << (result.validFaces ? "Aprobado" : "Suspenso");
+            std::cout << "\n[Normals] Resultado: " << (result.normals ? "Aprobado" : "Suspenso");
             std::cout << "\n[PruebaX] Resultado: " << (result.pruebaX ? "Aprobado" : "Suspenso");
             std::cout << "\n[PruebaY] Resultado: " << (result.pruebaY ? "Aprobado" : "Suspenso");
             std::cout << "\n";

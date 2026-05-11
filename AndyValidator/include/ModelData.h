@@ -45,6 +45,7 @@ struct Results
     bool test1 = false;
     bool polygon = false;
     bool validFaces = false;
+    bool normals = false;
     bool pruebaX = false;
     bool pruebaY = false;
 };

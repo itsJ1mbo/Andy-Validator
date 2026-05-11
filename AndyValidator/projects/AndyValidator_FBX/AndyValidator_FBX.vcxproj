@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\ImportManager.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\NormalsValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\PolygonValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba1Validation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\Validation.h" />
@@ -23,6 +24,7 @@
     <ClCompile Include="..\..\src\AndyValidator_Core\Prueba1Validation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\ImportManager.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_FBX\NormalsValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\PolygonValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\ValidatorManager.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\VertexValidation.cpp" />
