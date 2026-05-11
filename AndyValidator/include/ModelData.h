@@ -42,5 +42,6 @@ struct Results
     size_t index;
     ModelData model;
     
-    bool test1 = false;
+    bool test1;
+    bool polygon;
 };

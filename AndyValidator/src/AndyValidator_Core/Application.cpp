@@ -3,6 +3,8 @@
 #include "AndyValidator_FBX/FBX.h"
 #include "AndyValidator_Window/Window.h"
 
+#include <iostream>
+
 Application::Application() : _loader(std::make_unique<Loader>()), _results(_loader->getModelPaths().size())
 {
 
