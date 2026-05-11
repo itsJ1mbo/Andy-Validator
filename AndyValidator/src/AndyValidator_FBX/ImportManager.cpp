@@ -20,6 +20,7 @@ FbxScene* ImportManager::import(const std::string& file, FbxManager* manager)
 #if _DEBUG
 		std::cout << std::format("Error al inicializar el archivo FBX: {}, {}", file, importer->GetStatus().GetErrorString());
 #endif
+        importer->Destroy();
 		return nullptr;
 	}
 
@@ -29,6 +30,7 @@ FbxScene* ImportManager::import(const std::string& file, FbxManager* manager)
 #if _DEBUG
 		std::cout << "Error al crear la escena del SDK de FBX\n";
 #endif
+        importer->Destroy();
 		return nullptr;
 	}
 
@@ -38,6 +40,7 @@ FbxScene* ImportManager::import(const std::string& file, FbxManager* manager)
 		std::cout << std::format("Error al importar la escena del SDK de FBX: {}", importer->GetStatus().GetErrorString());
 #endif
 		scene->Destroy();
+        importer->Destroy();
 		return nullptr;
 	}
 

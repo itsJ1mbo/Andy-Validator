@@ -38,6 +38,7 @@ struct Config
 
 struct Results
 {
+    std::string name;
     size_t index;
     ModelData model;
     
