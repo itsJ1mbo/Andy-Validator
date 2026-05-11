@@ -29,7 +29,7 @@ Proyecto que gestiona y crea la ventana. Proporciona las herramientas para crear
 Proyecto que realiza la validacion a traves del sdk de autodesk. El punto de entrada inicializa la libreria y gestiona el hilo secundario que corre la importacion y validaciones de cada modelo.
 #### Validaciones
 La clase Validation es virtual y de ella heredara cada tipo de validacion distinta, implementando el metodo validate() segun cada caso
-```
+```cpp
 class Validation
 {
 public:
@@ -39,7 +39,7 @@ public:
 };
 ```
 El FbxScene es el modelo, la libreria los llama escenas pero es un unico modelo. Results es un struct que tendrá un booleano por cada validacion. Se pasa por referencia porque cada implementacion de validate() pondrá a true el booleano correspondiente a su validación si el modelo lo cumple (hay un struct por modelo)
-```
+```cpp
 struct Results
 {
 	ModelData model; // Para OpenGL
@@ -52,7 +52,7 @@ struct Results
 };
 ```
 El ValidatorManager es el encargado de iterar por cada modelo llamando a todos los validate() de cada uno. Guardará los resultados de la validacion en un vector que leerá el Core para mostrarlos en la ventana. 
-```
+```cpp
 class ValidatorManager 
 {
 public:
@@ -66,7 +66,7 @@ private:
 ```
 #### Importacion
 ImportManager importa cada modelo a una FbxScene que luego FBX pasa al ValidatorManager, tras las validaciones el ImportManager traduce los datos del modelo a una estructura que OpenGL pueda entender
-```
+```cpp
 struct Vertex 
 {
     glm::vec3 position;
@@ -94,10 +94,10 @@ struct ModelData
 ```
 ### Core
 Proyecto que gestiona la aplicacion y su bucle. Llama al render y lee los modelos que luego FBX carga, gestiona los resultados devueltos por el proyecto FBX para mostrarlos en la ventana.
-```
+```cpp
 void Application::run()
 {
-    FBX::instance().start(_loader->getModelPaths()); // Inicia hilo trabajador
+    FBX::instance().start(_loader->getModelPaths(), _loader->getConfig()); // Inicia hilo trabajador
 
     while (!Window::instance().shouldWindowClose())
     {
@@ -112,7 +112,7 @@ void Application::run()
 }
 ```
 Lee de la misma carpeta un archivo validator.cfg que tiene datos dependientes del proyecto específico. El usuario debe cambiarlo segun la necesidad. Si no encunetra el archivo lo crea con valores por defecto
-```
+```cpp
 struct Config
 {
     int polygons = 10000;
