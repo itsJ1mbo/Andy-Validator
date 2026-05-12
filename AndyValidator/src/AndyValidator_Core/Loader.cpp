@@ -40,7 +40,9 @@ void Loader::initDirectory()
 
     if (!fs::exists(_path) || !fs::is_directory(_path))
     {
+#if _DEBUG
         std::cout << "No hay directorio de FBXs\n";
+#endif
     }
     else 
     {
@@ -49,7 +51,9 @@ void Loader::initDirectory()
 
         if (_directory == end)
         {
+#if _DEBUG
             std::cout << "El directorio de FBXs esta vacio\n";
+#endif
         }
         else
         {

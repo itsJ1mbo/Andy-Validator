@@ -1,11 +1,12 @@
 #pragma once
 
+#include <optional>
 #include <vector>
 #include <string>
 
 #include <glm/glm.hpp>
 
-enum ValidationType { Prueba1Test, PolygonTest, VertexTest, NormalsTest};
+enum ValidationType { None, Prueba1Test, PolygonTest, VertexTest, NormalsTest};
 
 struct Vertex 
 {
@@ -40,7 +41,7 @@ struct Config
 
 struct Results
 {
-    size_t index = -1;
+    std::optional<size_t> index;
     ModelData model;
     
     std::vector<std::pair<ValidationType, bool>> validations;

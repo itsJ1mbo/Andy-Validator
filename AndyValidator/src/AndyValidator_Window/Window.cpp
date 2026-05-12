@@ -7,6 +7,7 @@
 #include "magicEnum/magic_enum.hpp"
 #include <iostream>
 #include <filesystem>
+#include <utility>
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -29,16 +30,14 @@ Window& Window::instance()
     return *_instance;
 }
 
-bool Window::init() const
+bool Window::init()
 {
-    if (_instance) 
-    {
-        return _instance->initWindow();
-    }
-    else
+    if (!_instance) 
     {
         return false;
     }
+    
+	return initWindow();
 }
 
 void Window::free() const
@@ -49,12 +48,16 @@ void Window::free() const
 bool Window::initWindow()
 {
     if (!initGlfw()) {
+#if _DEBUG
         std::cout << "Error inicializando GLFW\n";
+#endif
         return false;
     }
 
     if (!initImgui()) {
+#if _DEBUG
         std::cout << "Error inicializando dearImgui\n";
+#endif
         return false;
     }
 
@@ -82,7 +85,7 @@ void Window::updateWindow(const std::vector<Results>& results) const
 
 void Window::setModelNames(const std::vector<std::string>& paths)
 {
-    for (auto path : paths) {
+    for (const auto& path : paths) {
         std::filesystem::path p(path);
         _modelNames.push_back(p.filename().string());
     }
@@ -119,7 +122,9 @@ bool Window::initGlfw()
 
     if (_glfwWindow == NULL)
     {
+#if _DEBUG
         std::cout << "La ventana se ha cagado encima\n";
+#endif
         glfwTerminate();
         return false;
     }
@@ -127,7 +132,9 @@ bool Window::initGlfw()
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
+#if _DEBUG
         std::cout << "Failed to initialize GLAD\n";
+#endif
         return false;
     }
 
@@ -149,7 +156,7 @@ bool Window::initImgui() const
     io.IniFilename = nullptr; //porque nos la pela la persistencia de la ventana
 
     io.Fonts->AddFontDefault();
-    io.FontGlobalScale = 1.5;
+    io.FontGlobalScale = 1.0;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -239,7 +246,7 @@ void Window::createResultDropdown(const Results& result, int index) const
 
     if (abierto)
     {
-        if (result.index == -1) {
+        if (!result.index.has_value()) {
             ImGui::Text("Pendiente por validar.");
         }
         else {
@@ -250,7 +257,7 @@ void Window::createResultDropdown(const Results& result, int index) const
                 //libreria magica que convierte de enum a string
                 ImGui::Text(magic_enum::enum_name(val.first).data());
                 ImGui::SameLine();
-                ImGui::TextColored(val.second ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), val.second ? "Pasado" : "No pasado");
+                ImGui::TextColored(val.second ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), val.second ? "Aprobado" : "Suspenso");
             }
         }
     }
