@@ -87,6 +87,7 @@ void Loader::readConfig(const std::string& path)
         std::string value = line.substr(equal + 1);
 
         key.erase(std::ranges::remove_if(key, isspace).begin(), key.end());
+        value.erase(std::ranges::remove_if(value, isspace).begin(), value.end());
 
         if (key == "MAX_POLYGONS") 
         {
