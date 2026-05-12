@@ -50,6 +50,6 @@ struct Results
 {
     std::optional<size_t> index;
     ModelData model;
-    
+    bool allTestsPassed = true;
     std::vector<std::pair<ValidationType, bool>> validations;
 };

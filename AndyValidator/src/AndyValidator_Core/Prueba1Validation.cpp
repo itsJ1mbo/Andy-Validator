@@ -2,5 +2,8 @@
 
 void Prueba1Validation::validate(const FbxScene* fbx, Results& results)
 {
-    results.validations.emplace_back(Prueba1Test, fbx->GetRootNode()->GetChildCount() > 0);
+    bool validationResult = fbx->GetRootNode()->GetChildCount() > 0;
+    if (!validationResult)
+        results.allTestsPassed = false;
+    results.validations.emplace_back(Prueba1Test, validationResult);
 }

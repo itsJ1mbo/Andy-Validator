@@ -222,7 +222,7 @@ void Window::createPanel(const std::vector<Results>& results) const
     bool open = true;
     if (ImGui::Begin("Desplegables", &open, flags))
     {
-        ImGui::TextColored(ImVec4(1, 0, 1, 1), "Titulo muy guapo:");
+        ImGui::TextColored(ImVec4(1, 0, 1, 1), "Titulo muy guapo que es completamente innecesario:");
         for (int i = 0; i < results.size(); i++) {
             createResultDropdown(results[i], i);
         }
@@ -240,6 +240,12 @@ void Window::createResultDropdown(const Results& result, int index) const
     //y como queremos tener un hover por si el nombre del archivo es demasiado largo, tenemos que hacerlo asi
     //(si estuviera dentro de la condicion de abierto solo se ejecutaria cuando el header estuviera abierto)
     bool abierto = ImGui::CollapsingHeader(_modelNames[index].c_str());
+
+    ImGui::SameLine();
+    if (!result.index.has_value())
+        ImGui::TextColored(ImVec4(1, 1, 1, 1), "(Pendiente)");
+    else
+        ImGui::TextColored(result.allTestsPassed ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), result.allTestsPassed ? "(Aprobado)" : "(Suspenso)");
 
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip(_modelNames[index].c_str());
