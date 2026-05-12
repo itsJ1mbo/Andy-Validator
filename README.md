@@ -28,7 +28,7 @@ Proyecto que gestiona y crea la ventana. Proporciona las herramientas para crear
 ### FBX
 Proyecto que realiza la validacion a traves del sdk de autodesk. El punto de entrada inicializa la libreria y gestiona el hilo secundario que corre la importacion y validaciones de cada modelo.
 #### Validaciones
-La clase Validation es virtual y de ella heredara cada tipo de validacion distinta, implementando el metodo validate() y tiene un _validationType segun cada caso
+La clase Validation es virtual y de ella heredara cada tipo de validacion distinta, implementando el metodo validate() segun cada caso
 ```cpp
 class Validation
 {
@@ -36,9 +36,6 @@ public:
 	virtual ~Validation() = default;
 
 	virtual void validate(const FbxScene* fbx, ValidationResults& results) = 0;
-
-protected:
-	ValidationType _validationType = None;
 };
 ```
 El FbxScene es el modelo, la libreria los llama escenas pero es un unico modelo. Results es un struct que tendrá un vector de booleanos, uno por cada validacion. Se pasa por referencia porque cada implementacion de validate() pondrá a true el booleano correspondiente a su validación (ValidationType) si el modelo lo cumple (hay un struct por modelo)
@@ -48,7 +45,7 @@ enum ValidationType { None, TestX, TestY /* etc... */};
 struct Results
 {
 	ModelData model; // Para OpenGL
-	size_t index; // Para almacenamiento
+	std::optional<size_t> index; // Para almacenamiento
 
 	std::vector<std::pair<ValidationType, bool>> validations;
 };
@@ -101,12 +98,14 @@ void Application::run()
 {
     FBX::instance().start(_loader->getModelPaths(), _loader->getConfig()); // Inicia hilo trabajador
 
+    Window::instance().setModelNames(_loader->getModelPaths());
+
     while (!Window::instance().shouldWindowClose())
     {
         const auto results = FBX::instance().checkNewResults();
         for (const auto& result : results)
     	{
-            _results[result.index] = result;
+            _results[*result.index] = result;
         }
 
         Window::instance().updateWindow();

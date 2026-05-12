@@ -2,7 +2,7 @@
 
 void VertexValidation::validate(const FbxScene* fbx, Results& results)
 {
-    results.validations.emplace_back(_validationType, validPolygon(fbx->GetRootNode()));
+    results.validations.emplace_back(VertexTest, validPolygon(fbx->GetRootNode()));
 }
 
 bool VertexValidation::validPolygon(FbxNode* node)

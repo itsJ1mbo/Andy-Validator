@@ -2,5 +2,5 @@
 
 void Prueba1Validation::validate(const FbxScene* fbx, Results& results)
 {
-    results.validations.emplace_back(_validationType, fbx->GetRootNode()->GetChildCount() > 0);
+    results.validations.emplace_back(Prueba1Test, fbx->GetRootNode()->GetChildCount() > 0);
 }
