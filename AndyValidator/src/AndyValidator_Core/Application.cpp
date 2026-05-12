@@ -27,12 +27,11 @@ bool Application::init() const
 void Application::run()
 {
     FBX::instance().start(_loader->getModelPaths(), _loader->getConfig());
-    
+
+    Window::instance().setModelNames(_loader->getModelPaths());
 
     while (!Window::instance().shouldWindowClose())
     {
-        
-
         const auto results = FBX::instance().checkNewResults();
         for (const auto& result : results)
     	{
@@ -47,8 +46,7 @@ void Application::run()
             for (int i = 0; i < 50; i++) std::cout << "=";
             std::cout << "\n";
         }        
-
-        Window::instance().updateWindow();
+        Window::instance().updateWindow(_results);
     }
 }
 

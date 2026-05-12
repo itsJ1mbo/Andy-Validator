@@ -38,8 +38,7 @@ struct Config
 
 struct Results
 {
-    std::string name;
-    size_t index;
+    size_t index = -1;
     ModelData model;
     
     bool test1 = false;

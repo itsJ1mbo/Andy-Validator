@@ -73,7 +73,6 @@ void FBX::processTask(const std::stop_token& stopToken, const std::vector<std::s
         if (model)
         {
             Results fileResults;
-			fileResults.name = files[i];
             fileResults.index = i;
 
             _validatorManager->runValidations(model, fileResults);
