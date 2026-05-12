@@ -4,7 +4,7 @@
 
 void NormalsValidation::validate(const FbxScene* fbx, Results& results)
 {
-    results.normals = checkNormals(fbx->GetRootNode());
+    results.validations.push_back({ _validationType, checkNormals(fbx->GetRootNode()) });
 }
 
 bool NormalsValidation::checkNormals(FbxNode* node)

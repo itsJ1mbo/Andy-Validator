@@ -4,6 +4,7 @@
 #include "dearImgui/imgui.h"
 #include "dearImgui/backends/imgui_impl_glfw.h"
 #include "dearImgui/backends/imgui_impl_opengl2.h"
+#include "magicEnum/magic_enum.hpp"
 #include <iostream>
 #include <filesystem>
 
@@ -211,7 +212,7 @@ void Window::createPanel(const std::vector<Results>& results) const
     bool open = true;
     if (ImGui::Begin("Desplegables", &open, flags))
     {
-        ImGui::TextColored(ImVec4(1, 0, 0, 1), "Modelos:");
+        ImGui::TextColored(ImVec4(1, 0, 0, 1), "Titulo muy guapo:");
         for (int i = 0; i < results.size(); i++) {
             createResultDropdown(results[i], i);
         }
@@ -226,13 +227,19 @@ void Window::createResultDropdown(const Results& result, int index) const
     ImGui::PushID(&result);
     if (ImGui::CollapsingHeader(_modelNames[index].c_str()))
     {
-        ImGui::Text("Esto es un texto muy guay.");
-        ImGui::BulletText("Esto seria un test que sale:");
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1, 0, 0, 1), "mal :(");
-        ImGui::BulletText("Y esto seria un test que sale:");
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(0, 1, 0, 1), "bien :D");
+        if (result.index == -1) {
+            ImGui::Text("Pendiente por validar.");
+        }
+        else {
+            for(auto val : result.validations)
+            {
+                ImGui::BulletText("Resultado de");
+                ImGui::SameLine();
+                ImGui::Text(magic_enum::enum_name(val.first).data());
+                ImGui::SameLine();
+                ImGui::TextColored(val.second ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), val.second ? "Pasado" : "No pasado");
+            }
+        }
     }
     //importante hacer que imgui deje de usar la id que le hemos dicho que use para el objeto
     ImGui::PopID();

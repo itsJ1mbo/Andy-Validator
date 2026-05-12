@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+enum ValidationType { Prueba1Test, PolygonTest, VertexTest, NormalsTest};
+
 struct Vertex 
 {
     glm::vec3 position;
@@ -41,10 +43,5 @@ struct Results
     size_t index = -1;
     ModelData model;
     
-    bool test1 = false;
-    bool polygon = false;
-    bool validFaces = false;
-    bool normals = false;
-    bool pruebaX = false;
-    bool pruebaY = false;
+    std::vector<std::pair<ValidationType, bool>> validations;
 };
