@@ -35,7 +35,7 @@ void Application::run()
         const auto results = FBX::instance().checkNewResults();
         for (const auto& result : results)
     	{
-            _results[result.index] = result;
+            _results[*result.index] = result;
             //std::cout << "\n[Test1] Resultado: " << (result.test1 ? "Aprobado" : "Suspenso");
             //std::cout << "\n[Polygon] Resultado: " << (result.polygon ? "Aprobado" : "Suspenso");
             //std::cout << "\n[3V Faces] Resultado: " << (result.validFaces ? "Aprobado" : "Suspenso");

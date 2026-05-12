@@ -9,7 +9,7 @@ class Window
 public:
     static Window& instance();
 
-    bool init() const;
+    bool init();
     void free() const;
 
     bool initWindow();
@@ -18,7 +18,7 @@ public:
     void setModelNames(const std::vector<std::string>& paths);
 
 private:
-    Window(int width = 800, int height = 600);
+    Window(int width = 1200, int height = 900);
     Window(const Window& in) = delete;
     Window& operator=(const Window& in) = delete;
     Window(const Window&& in) = delete;

@@ -10,7 +10,8 @@ public:
 	virtual ~Validation() = default;
 
 	virtual void validate(const FbxScene* fbx, Results& results) = 0;
+
 protected:
-	ValidationType _validationType;
+	ValidationType _validationType = None;
 };
 

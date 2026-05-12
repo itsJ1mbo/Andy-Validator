@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <vector>
 #include <string>
 
@@ -46,7 +47,7 @@ struct Config
 
 struct Results
 {
-    size_t index = -1;
+    std::optional<size_t> index;
     ModelData model;
     
     std::vector<std::pair<ValidationType, bool>> validations;

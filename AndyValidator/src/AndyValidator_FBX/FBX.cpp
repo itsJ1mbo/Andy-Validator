@@ -19,15 +19,15 @@ FBX& FBX::instance()
 
 bool FBX::init()
 {
-	if (_instance)
-    {
-		_validatorManager = std::make_unique<ValidatorManager>();
-        return initSdk();
-    }
-    else
+	if (!_instance)
     {
         return false;
     }
+    
+    _validatorManager = std::make_unique<ValidatorManager>();
+	_importManager = std::make_unique<ImportManager>();
+
+    return initSdk();
 }
 
 void FBX::free()
