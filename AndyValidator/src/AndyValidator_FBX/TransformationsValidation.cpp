@@ -1,5 +1,6 @@
 #include "AndyValidator_FBX/TransformationsValidation.h"
 #include <cmath> 
+#include <iostream>
 
 void TransformationsValidation::validate(const FbxScene* fbx, Results& results)
 {
@@ -22,18 +23,28 @@ bool TransformationsValidation::checkTransformations(FbxNode* node)
 
     if (node->GetParent() != nullptr)
     {
-        FbxDouble3 translation = node->LclTranslation.Get();
-        FbxDouble3 rotation = node->LclRotation.Get();
-        FbxDouble3 scaling = node->LclScaling.Get();
+        FbxNodeAttribute* attribute = node->GetNodeAttribute();
 
-        //posicion en (0, 0, 0)
-        if (!isZero(translation[0]) || !isZero(translation[1]) || !isZero(translation[2])) return false;
+        if (attribute && attribute->GetAttributeType() == FbxNodeAttribute::eMesh)
+        {
+            FbxDouble3 translation = node->LclTranslation.Get();
+            FbxDouble3 rotation = node->LclRotation.Get();
+            FbxDouble3 scaling = node->LclScaling.Get();
 
-        //rotacion en (0, 0, 0)
-        if (!isZero(rotation[0]) || !isZero(rotation[1]) || !isZero(rotation[2])) return false;
+            //std::cout << "--- Nodo evaluado: " << node->GetName() << " ---\n";
+            //std::cout << "Posicion: (" << translation[0] << ", " << translation[1] << ", " << translation[2] << ")\n";
+            //std::cout << "Rotacion: (" << rotation[0] << ", " << rotation[1] << ", " << rotation[2] << ")\n";
+            //std::cout << "Escala:   (" << scaling[0] << ", " << scaling[1] << ", " << scaling[2] << ")\n\n";
 
-        //escala en (1, 1, 1)
-        if (!isOne(scaling[0]) || !isOne(scaling[1]) || !isOne(scaling[2])) return false;
+            // posicion en (0, 0, 0)
+            if (!isZero(translation[0]) || !isZero(translation[1]) || !isZero(translation[2])) return false;
+
+            // rotacion en (0, 0, 0)
+            if (!isZero(rotation[0]) || !isZero(rotation[1]) || !isZero(rotation[2])) return false;
+
+            // escala en (1, 1, 1)
+            if (!isOne(scaling[0]) || !isOne(scaling[1]) || !isOne(scaling[2])) return false;
+        }
     }
 
     //miramos todos los hijos

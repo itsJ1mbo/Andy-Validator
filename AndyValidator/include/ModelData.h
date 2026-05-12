@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 enum ValidationType { 
+    None,
     Prueba1Test,
     PolygonTest, 
     VertexTest, 

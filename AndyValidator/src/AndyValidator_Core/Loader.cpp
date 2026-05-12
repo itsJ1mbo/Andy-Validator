@@ -38,6 +38,8 @@ void Loader::initDirectory()
 {
     _path = "..\\..\\FBXs";
 
+    std::cout << "Buscando en: " << fs::absolute(_path) << std::endl;
+
     if (!fs::exists(_path) || !fs::is_directory(_path))
     {
 #if _DEBUG
