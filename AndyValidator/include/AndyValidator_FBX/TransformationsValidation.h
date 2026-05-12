@@ -4,10 +4,6 @@
 class TransformationsValidation : public Validation
 {
 public:
-    TransformationsValidation()
-    {
-        _validationType = TransformationsTest;
-    }
     void validate(const FbxScene* fbx, Results& results) override;
 
 private:

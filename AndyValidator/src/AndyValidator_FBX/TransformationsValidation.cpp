@@ -4,7 +4,7 @@
 void TransformationsValidation::validate(const FbxScene* fbx, Results& results)
 {
     //evaluamos el nodo raiz
-    results.validations.push_back({ _validationType, checkTransformations(fbx->GetRootNode()) });
+    results.validations.emplace_back(TransformationsTest, checkTransformations(fbx->GetRootNode()));
 }
 
 bool TransformationsValidation::isZero(double value, double epsilon)
