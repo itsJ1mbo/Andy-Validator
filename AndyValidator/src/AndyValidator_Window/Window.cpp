@@ -148,6 +148,9 @@ bool Window::initImgui() const
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.IniFilename = nullptr; //porque nos la pela la persistencia de la ventana
 
+    io.Fonts->AddFontDefault();
+    io.FontGlobalScale = 1.5;
+
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();    
@@ -212,7 +215,7 @@ void Window::createPanel(const std::vector<Results>& results) const
     bool open = true;
     if (ImGui::Begin("Desplegables", &open, flags))
     {
-        ImGui::TextColored(ImVec4(1, 0, 0, 1), "Titulo muy guapo:");
+        ImGui::TextColored(ImVec4(1, 0, 1, 1), "Titulo muy guapo:");
         for (int i = 0; i < results.size(); i++) {
             createResultDropdown(results[i], i);
         }
@@ -225,7 +228,16 @@ void Window::createResultDropdown(const Results& result, int index) const
 {
     //podemos pasarle la direccion de memoria del resultado a imgui como id para que cada dropdown sea independiente de los demas
     ImGui::PushID(&result);
-    if (ImGui::CollapsingHeader(_modelNames[index].c_str()))
+
+    //quizas un poco feo tener esto asi, pero imgui solo dibuja los contenidos si el header esta abierto,
+    //y como queremos tener un hover por si el nombre del archivo es demasiado largo, tenemos que hacerlo asi
+    //(si estuviera dentro de la condicion de abierto solo se ejecutaria cuando el header estuviera abierto)
+    bool abierto = ImGui::CollapsingHeader(_modelNames[index].c_str());
+
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip(_modelNames[index].c_str());
+
+    if (abierto)
     {
         if (result.index == -1) {
             ImGui::Text("Pendiente por validar.");
@@ -235,6 +247,7 @@ void Window::createResultDropdown(const Results& result, int index) const
             {
                 ImGui::BulletText("Resultado de");
                 ImGui::SameLine();
+                //libreria magica que convierte de enum a string
                 ImGui::Text(magic_enum::enum_name(val.first).data());
                 ImGui::SameLine();
                 ImGui::TextColored(val.second ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), val.second ? "Pasado" : "No pasado");
