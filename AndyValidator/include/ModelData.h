@@ -6,7 +6,13 @@
 
 #include <glm/glm.hpp>
 
-enum ValidationType { None, Prueba1Test, PolygonTest, VertexTest, NormalsTest};
+enum ValidationType { 
+    Prueba1Test,
+    PolygonTest, 
+    VertexTest, 
+    NormalsTest, 
+    TransformationsTest
+};
 
 struct Vertex 
 {
