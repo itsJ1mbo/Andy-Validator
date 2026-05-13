@@ -13,9 +13,9 @@ enum ValidationType {
     VertexTest, 
     NormalsTest, 
     TransformationsTest,
+    PivotTest,
     UnitsTest,
-    NamingTest,
-    PivotTest
+    NamingTest
 };
 
 enum class NamingNomenclature

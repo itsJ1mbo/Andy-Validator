@@ -2,6 +2,7 @@
 
 #include <map>
 
+
 void NormalsValidation::validate(const FbxScene* fbx, Results& results)
 {
     bool validationResult = checkNormals(fbx->GetRootNode());
