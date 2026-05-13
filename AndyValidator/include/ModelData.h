@@ -17,7 +17,8 @@ enum ValidationType {
     UnitsTest,
     NamingTest,
     CleanSceneTest,
-    TexelDensityTest
+    TexelDensityTest,
+    LODTest
 };
 
 enum class NamingNomenclature

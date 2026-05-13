@@ -14,6 +14,7 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\CleanSceneValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\ImportManager.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\LODValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\NamingValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\NormalsValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\PivotValidation.h" />
@@ -31,6 +32,7 @@
     <ClCompile Include="..\..\src\AndyValidator_FBX\CleanSceneValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\ImportManager.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_FBX\LODValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\NamingValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\NormalsValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\PivotValidation.cpp" />
