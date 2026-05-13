@@ -18,5 +18,11 @@ private:
     /// <param name="mesh"></param>
     /// <returns></returns>
     FbxVector4 getMeshCenter(FbxMesh* mesh);
+
+    /// <summary>
+    /// devuelve el punto mas bajo, asumiendo que las coordenadas estan en XYZ
+    /// </summary>
+    /// <returns></returns>
+    FbxVector4 getMeshBase(FbxMesh* mesh);
 };
 
