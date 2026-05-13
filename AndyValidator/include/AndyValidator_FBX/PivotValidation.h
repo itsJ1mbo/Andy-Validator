@@ -10,5 +10,13 @@ public:
 
 private:
     bool validPivot(FbxNode* node);
+
+
+    /// <summary>
+    /// devuelve el Vector4 de la posicion central global de la geometria 
+    /// </summary>
+    /// <param name="mesh"></param>
+    /// <returns></returns>
+    FbxVector4 getMeshCenter(FbxMesh* mesh);
 };
 
