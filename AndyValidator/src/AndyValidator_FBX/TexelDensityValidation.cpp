@@ -1,4 +1,5 @@
 #include "AndyValidator_FBX/TexelDensityValidation.h"
+#include "AndyValidator_FBX/FBX.h"
 #include <cmath>
 #include <limits>
 #include <vector>
@@ -14,7 +15,7 @@ void TexelDensityValidation::validate(const FbxScene* fbx, Results& results)
     if (success && maxDensity > 0.0)
     {
         // tolerancia entre la zona con mas resolucion y la que menos
-		double tolerance = 1.30; // 30%
+		double tolerance = FBX::instance().getConfig().texelDensityTolerance;
 
         if ((maxDensity / minDensity) > tolerance)
         {

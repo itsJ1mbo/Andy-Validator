@@ -61,6 +61,7 @@ struct Config
     int polygons = 10000;
     bool unreal = false;
     NamingNomenclature naming = NamingNomenclature::UpperCamelCase;
+    double texelDensityTolerance = 1.30;
 };
 
 struct Results

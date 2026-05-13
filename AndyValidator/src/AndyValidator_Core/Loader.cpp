@@ -104,6 +104,10 @@ void Loader::readConfig(const std::string& path)
             else if (value == "Upper_Snake_Case") _cfg.naming = NamingNomenclature::Upper_Snake_Case;
             else if (value == "lower_snake_case") _cfg.naming = NamingNomenclature::lower_snake_case;
         }
+        else if (key == "TEXEL_DENSITY_TOLERANCE")
+        {
+            _cfg.texelDensityTolerance = std::stod(value);
+        }
     }
 
     file.close();
@@ -133,6 +137,7 @@ void Loader::createConfig()
     file << std::format("MAX_POLYGONS = {}\n", _cfg.polygons);
     file << std::format("UNREAL_ENGINE = {}\n", _cfg.unreal ? "true" : "false");
     file << std::format("NAMING_CONVENTION = {}\n", namingStr);
+    file << std::format("TEXEL_DENSITY_TOLERANCE = {:.2f}\n", _cfg.texelDensityTolerance);
 
     file.close();
 }
