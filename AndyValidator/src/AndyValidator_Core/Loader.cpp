@@ -97,6 +97,13 @@ void Loader::readConfig(const std::string& path)
         {
 			_cfg.unreal = value == "true";
         }
+        else if (key == "NAMING_NOMENCLATURE")
+        {
+            if (value == "UpperCamelCase") _cfg.naming = NamingNomenclature::UpperCamelCase;
+            else if (value == "lowerCamelCase") _cfg.naming = NamingNomenclature::lowerCamelCase;
+            else if (value == "Upper_Snake_Case") _cfg.naming = NamingNomenclature::Upper_Snake_Case;
+            else if (value == "lower_snake_case") _cfg.naming = NamingNomenclature::lower_snake_case;
+        }
     }
 
     file.close();
@@ -114,8 +121,18 @@ void Loader::createConfig()
         return;
     }
 
+    std::string namingStr = "UpperCamelCase";
+    switch (_cfg.naming)
+    {
+        case NamingNomenclature::UpperCamelCase:   namingStr = "UpperCamelCase"; break;
+        case NamingNomenclature::lowerCamelCase:   namingStr = "lowerCamelCase"; break;
+        case NamingNomenclature::Upper_Snake_Case: namingStr = "Upper_Snake_Case"; break;
+        case NamingNomenclature::lower_snake_case: namingStr = "lower_snake_case"; break;
+    }
+
     file << std::format("MAX_POLYGONS = {}\n", _cfg.polygons);
     file << std::format("UNREAL_ENGINE = {}\n", _cfg.unreal ? "true" : "false");
+    file << std::format("NAMING_CONVENTION = {}\n", namingStr);
 
     file.close();
 }
