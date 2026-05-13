@@ -32,27 +32,19 @@ bool PivotValidation::validPivot(FbxNode* node)
             // posicion de la base (plano valido para la base)
             FbxDouble3 deepestPosition = getMeshBase(mesh);
 
-            // debug
-            std::cout << "pivot position: " << pivotPosition[0] << " " << pivotPosition[1] << " " << pivotPosition[2] << "\n";
-            std::cout << "deepest position: " << deepestPosition[0] << " " << deepestPosition[1] << " " << deepestPosition[2] << "\n";
-
-        
             // si esta en el centro ya esta bien
             if (pivotPosition == centerPosition) {
                 return true;
             }
 
-
             // si esta en la base
             if ((pivotPosition[2] == 0 && deepestPosition[2] == 0))
                 return true;
             
+            // si ha llegado hasta aqui es porque ha suspendido
             return false;
-
         }
     }
-
-    
 
     //miramos todos los hijos
     for (int i = 0; i < node->GetChildCount(); ++i)
@@ -74,26 +66,25 @@ FbxVector4 PivotValidation::getMeshCenter(FbxMesh* mesh)
 
     FbxVector4 center(0, 0, 0, 0);
 
-    for (int i = 0; i < polygonCount; ++i)  // Vemos las caras
+    // recorre las caras
+    for (int i = 0; i < polygonCount; ++i) 
     {
         int polygonSize = mesh->GetPolygonSize(i);
 
-        for (int j = 0; j < polygonSize; j++) {
+        // recorre los vertices
+        for (int j = 0; j < polygonSize; j++) { 
 
             int controlPointIndex = mesh->GetPolygonVertex(i, j);
 
             // calcula la posicion global (para que no sea relativa al pivot)
             FbxVector4 a = (controlPoints[controlPointIndex] + mesh->GetNode()->LclTranslation.Get());
-            //std::cout << "a position: " << a[0] << " " << a[1] << " " << a[2] << "\n";
 
             center += a;
-
         }
-
     }
 
+    // calcula el centro de todos los puntos
     center /= mesh->GetPolygonVertexCount();
-   // std::cout << "center position: " << center[0] << " " << center[1] << " " << center[2] << "\n";
 
     return center;
 
@@ -106,7 +97,7 @@ FbxVector4 PivotValidation::getMeshBase(FbxMesh* mesh)
 
     FbxVector4 deepest = controlPoints[0];
 
-    for (int i = 0; i < polygonCount; ++i)  // Vemos las caras
+    for (int i = 0; i < polygonCount; ++i)  
     {
         int polygonSize = mesh->GetPolygonSize(i);
 
@@ -116,16 +107,12 @@ FbxVector4 PivotValidation::getMeshBase(FbxMesh* mesh)
 
             // calcula la posicion global (para que no sea relativa al pivot)
             FbxVector4 a = (controlPoints[controlPointIndex] + mesh->GetNode()->LclTranslation.Get());
-            //FbxVector4 a = (controlPoints[controlPointIndex]);
-            //std::cout << "new position: " << a[0] << " " << a[1] << " " << a[2] << "\n";
-            //std::cout << "new position: " << deepest[0] << " " << deepest[1] << " " << deepest[2] << "\n";
 
-
+            // busca la posicion mas baja (sistema XYZ(Z es altura))
             if (a[2] < deepest[2])
                 deepest = a;
         }
     }
-
 
     return deepest;
 }

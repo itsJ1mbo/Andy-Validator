@@ -20,7 +20,7 @@ private:
     FbxVector4 getMeshCenter(FbxMesh* mesh);
 
     /// <summary>
-    /// devuelve el punto mas bajo, asumiendo que las coordenadas estan en XYZ
+    /// devuelve el punto mas bajo, asumiendo que las coordenadas estan en XYZ, por lo que Z es la altura
     /// </summary>
     /// <returns></returns>
     FbxVector4 getMeshBase(FbxMesh* mesh);
