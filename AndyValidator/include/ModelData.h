@@ -14,7 +14,8 @@ enum ValidationType {
     NormalsTest, 
     TransformationsTest,
     UnitsTest,
-    NamingTest
+    NamingTest,
+    PivotTest
 };
 
 struct Vertex 
