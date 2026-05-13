@@ -12,6 +12,8 @@ void PivotValidation::validate(const FbxScene* fbx, Results& results)
 
 bool PivotValidation::validPivot(FbxNode* node)
 {
+    bool valid = false;
+
     if (node->GetParent() != nullptr) {
 
         FbxNodeAttribute* attribute = node->GetNodeAttribute();
@@ -36,14 +38,16 @@ bool PivotValidation::validPivot(FbxNode* node)
 
         
             // si esta en el centro ya esta bien
-            if (pivotPosition == centerPosition)
+            if (pivotPosition == centerPosition) {
                 return true;
+            }
 
 
-            // si NO esta en la base
-            if ((pivotPosition[2] != 0 && deepestPosition[2] != 0))
-                return false;
-
+            // si esta en la base
+            if ((pivotPosition[2] == 0 && deepestPosition[2] == 0))
+                return true;
+            
+            return false;
 
         }
     }
@@ -60,9 +64,6 @@ bool PivotValidation::validPivot(FbxNode* node)
     }
 
     return true;
-
-
-
 }
 
 FbxVector4 PivotValidation::getMeshCenter(FbxMesh* mesh)
