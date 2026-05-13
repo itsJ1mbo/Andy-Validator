@@ -9,6 +9,7 @@
 #include "AndyValidator_FBX/UnitsValidation.h"
 #include "AndyValidator_FBX/NamingValidation.h"
 #include "AndyValidator_FBX/CleanSceneValidation.h"
+#include "AndyValidator_FBX/TexelDensityValidation.h"
 
 ValidatorManager::ValidatorManager()
 {
@@ -21,6 +22,7 @@ ValidatorManager::ValidatorManager()
     _validations.push_back(std::make_unique<UnitsValidation>());
     _validations.push_back(std::make_unique<NamingValidation>());
     _validations.push_back(std::make_unique<CleanSceneValidation>());
+	_validations.push_back(std::make_unique<TexelDensityValidation>());
 }
 
 ValidatorManager::~ValidatorManager() = default;

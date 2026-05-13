@@ -19,6 +19,7 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\PivotValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\PolygonValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba1Validation.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\TexelDensityValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\TransformationsValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\UnitsValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\Validation.h" />
@@ -34,6 +35,7 @@
     <ClCompile Include="..\..\src\AndyValidator_FBX\NormalsValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\PivotValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\PolygonValidation.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_FBX\TexelDensityValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\TransformationsValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\UnitsValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\ValidatorManager.cpp" />
