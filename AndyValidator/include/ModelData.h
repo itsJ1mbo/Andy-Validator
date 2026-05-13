@@ -15,7 +15,8 @@ enum ValidationType {
     TransformationsTest,
     PivotTest,
     UnitsTest,
-    NamingTest
+    NamingTest,
+    CleanSceneTest
 };
 
 enum class NamingNomenclature
