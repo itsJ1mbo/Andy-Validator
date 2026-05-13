@@ -13,7 +13,8 @@ enum ValidationType {
     VertexTest, 
     NormalsTest, 
     TransformationsTest,
-    UnitsTest
+    UnitsTest,
+    NamingTest
 };
 
 struct Vertex 
@@ -50,6 +51,7 @@ struct Config
 struct Results
 {
     std::optional<size_t> index;
+    std::string fileName;
     ModelData model;
     bool allTestsPassed = true;
     std::vector<std::pair<ValidationType, bool>> validations;

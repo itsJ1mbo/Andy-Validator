@@ -4,6 +4,7 @@
 
 #include <format>
 #include <iostream>
+#include <filesystem>
 
 FBX::~FBX() = default;
 	
@@ -74,6 +75,8 @@ void FBX::processTask(const std::stop_token& stopToken, const std::vector<std::s
         {
             Results fileResults;
             fileResults.index = i;
+
+            fileResults.fileName = std::filesystem::path(files[i]).filename().string(); // Para la validacion del nombre
 
             _validatorManager->runValidations(model, fileResults);
 

@@ -6,6 +6,7 @@
 #include "AndyValidator_FBX/NormalsValidation.h"
 #include "AndyValidator_FBX/TransformationsValidation.h"
 #include "AndyValidator_FBX/UnitsValidation.h"
+#include "AndyValidator_FBX/NamingValidation.h"
 
 ValidatorManager::ValidatorManager()
 {
@@ -15,6 +16,7 @@ ValidatorManager::ValidatorManager()
     _validations.push_back(std::make_unique<NormalsValidation>());
     _validations.push_back(std::make_unique<TransformationsValidation>());
     _validations.push_back(std::make_unique<UnitsValidation>());
+    _validations.push_back(std::make_unique<NamingValidation>());
 }
 
 ValidatorManager::~ValidatorManager() = default;
