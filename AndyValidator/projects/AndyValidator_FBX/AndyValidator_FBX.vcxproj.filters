@@ -1,42 +1,81 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Archivos de origen">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Archivos de encabezado">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Archivos de recursos">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\CleanSceneValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\ImportManager.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\LODValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\NamingValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\NormalsValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\PivotValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\PolygonValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_Core\Prueba1Validation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\TexelDensityValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\TransformationsValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\UnitsValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\ValidatorManager.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\VertexValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\OverlappingUVValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\CleanSceneValidation.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\Validation.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\ValidatorManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\ImportManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba1Validation.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\LODValidation.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\NamingValidation.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\NormalsValidation.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\PivotValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\PolygonValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\VertexValidation.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba1Validation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\NormalsValidation.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\TexelDensityValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\TransformationsValidation.h">
@@ -45,60 +84,23 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\UnitsValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\NamingValidation.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\Validation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\PivotValidation.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\ValidatorManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\CleanSceneValidation.h">
-    <ClInclude Include="..\..\include\AndyValidator_FBX\TexelDensityValidation.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\VertexValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\LODValidation.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\OverlappingUVValidation.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\ValidatorManager.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\ImportManager.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_Core\Prueba1Validation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\PolygonValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\VertexValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\NormalsValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\TransformationsValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\UnitsValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\NamingValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\PivotValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\CleanSceneValidation.cpp">
-    <ClCompile Include="..\..\src\AndyValidator_FBX\TexelDensityValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\LODValidation.cpp">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
+    <Filter Include="Archivos de código fuente">
+      <UniqueIdentifier>{b528dc6f-a857-45ea-9645-7ef6d306d108}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado">
+      <UniqueIdentifier>{5cf5cd29-09fe-43b2-8faf-ac7b342ba337}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

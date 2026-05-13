@@ -11,6 +11,7 @@
 #include "AndyValidator_FBX/CleanSceneValidation.h"
 #include "AndyValidator_FBX/TexelDensityValidation.h"
 #include "AndyValidator_FBX/LODValidation.h"
+#include "AndyValidator_FBX/OverlappingUVValidation.h"
 
 ValidatorManager::ValidatorManager()
 {
@@ -25,6 +26,7 @@ ValidatorManager::ValidatorManager()
     _validations.push_back(std::make_unique<CleanSceneValidation>());
 	_validations.push_back(std::make_unique<TexelDensityValidation>());
     _validations.push_back(std::make_unique<LODValidation>());
+    _validations.push_back(std::make_unique<OverlappingUVValidation>());
 }
 
 ValidatorManager::~ValidatorManager() = default;
