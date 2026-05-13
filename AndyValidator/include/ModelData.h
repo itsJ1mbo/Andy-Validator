@@ -17,6 +17,14 @@ enum ValidationType {
     NamingTest
 };
 
+enum class NamingNomenclature
+{
+    UpperCamelCase,
+    lowerCamelCase,
+    Upper_Snake_Case,
+    lower_snake_case
+};
+
 struct Vertex 
 {
     glm::vec3 position;
@@ -42,10 +50,12 @@ struct ModelData
     std::vector<MeshData> meshes;
 };
 
+
 struct Config
 {
     int polygons = 10000;
     bool unreal = false;
+    NamingNomenclature naming = NamingNomenclature::UpperCamelCase;
 };
 
 struct Results
