@@ -19,7 +19,8 @@ enum ValidationType {
     CleanSceneTest,
     TexelDensityTest,
     LODTest,
-    OverlappingUVTest
+    OverlappingUVTest,
+    CollidersTest
 };
 
 enum class NamingNomenclature
