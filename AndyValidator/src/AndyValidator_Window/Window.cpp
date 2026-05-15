@@ -15,7 +15,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr)
+Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true)
 {
 
 }
@@ -69,7 +69,7 @@ bool Window::shouldWindowClose() const
     return glfwWindowShouldClose(_glfwWindow);
 }
 
-void Window::updateWindow(const std::vector<ModelResults>& results) const
+void Window::updateWindow(const std::vector<ModelResults>& results)
 {
     //eventos ventana
     glfwPollEvents();
@@ -97,7 +97,7 @@ void Window::processInput() const
         glfwSetWindowShouldClose(_glfwWindow, true);
 }
 
-void Window::render(const std::vector<ModelResults>& results) const
+void Window::render(const std::vector<ModelResults>& results)
 {
 
     //llamar al render del modelo o algo no se como va esto
@@ -170,7 +170,7 @@ bool Window::initImgui() const
     return true;
 }
 
-void Window::renderImgui(const std::vector<ModelResults>& results) const
+void Window::renderImgui(const std::vector<ModelResults>& results)
 {
 
     // Start the Dear ImGui frame
@@ -204,7 +204,7 @@ void Window::renderImgui(const std::vector<ModelResults>& results) const
     //glUseProgram(last_program);
 }
 
-void Window::createPanel(const std::vector<ModelResults>& results) const
+void Window::createPanel(const std::vector<ModelResults>& results)
 {
     //primero le damos tamaño, usamos el mainviewport (en vez de _width y _height) 
     //junto con la flag de always para que este escalado se aplique siempre y no solo una vez al principio
@@ -222,20 +222,38 @@ void Window::createPanel(const std::vector<ModelResults>& results) const
     bool open = true;
     if (ImGui::Begin("Desplegables", &open, flags))
     {
-        ImGui::TextColored(ImVec4(1, 0, 1, 1), "Titulo muy guapo que es completamente innecesario:");
+        //muy feo pero necesario para los botones de colapsar/desplegar, ya que si no no podemos desplegarlos
+        bool buttonPressed = false;
+
+        if (ImGui::Button("Desplegar todos"))
+        {
+            _collapsed = false;
+            buttonPressed = true;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Colapsar todos"))
+        {
+            _collapsed = true;
+            buttonPressed = true;
+        }
+
         for (int i = 0; i < results.size(); i++) {
-            createResultDropdown(results[i], i);
+            createResultDropdown(results[i], i, buttonPressed);
         }
     }
     //SIEMPRE hay que llamar a un end por cada begin
     ImGui::End();
 }
 
-void Window::createResultDropdown(const ModelResults& result, int index) const
+void Window::createResultDropdown(const ModelResults& result, int index, bool buttonPressed)
 {
     //podemos pasarle la direccion de memoria del resultado a imgui como id para que cada dropdown sea independiente de los demas
     ImGui::PushID(&result);
 
+    if(buttonPressed)
+        ImGui::SetNextItemOpen(!_collapsed);
     //quizas un poco feo tener esto asi, pero imgui solo dibuja los contenidos si el header esta abierto,
     //y como queremos tener un hover por si el nombre del archivo es demasiado largo, tenemos que hacerlo asi
     //(si estuviera dentro de la condicion de abierto solo se ejecutaria cuando el header estuviera abierto)
