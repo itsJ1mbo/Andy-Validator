@@ -9,6 +9,19 @@
 #include <filesystem>
 #include <utility>
 
+const char* vertexShaderSource = "#version 120\n"
+"attribute vec3 aPos;\n"
+"void main()\n"
+"{\n"
+"    gl_Position = vec4(aPos.x + 0.5, aPos.y, aPos.z, 1.0);\n"
+"}\0";
+
+const char* fragmentShaderSource = "#version 120\n"
+"void main()\n"
+"{\n"
+"    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n" // gl_FragColor es el color con el que se pintan los objetos
+"}\n";
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -42,6 +55,9 @@ bool Window::init()
 
 void Window::free() const
 {
+    glDeleteVertexArrays(1, &_vao);
+    glDeleteBuffers(1, &_vbo);
+    glDeleteProgram(_shaderProgram);
     glfwDestroyWindow(_glfwWindow);
 }
 
@@ -50,6 +66,13 @@ bool Window::initWindow()
     if (!initGlfw()) {
 #if _DEBUG
         std::cout << "Error inicializando GLFW\n";
+#endif
+        return false;
+    }
+
+    if(!initOpenGL()) {
+#if _DEBUG
+        std::cout << "Error inicializando OpenGL\n";
 #endif
         return false;
     }
@@ -76,9 +99,6 @@ void Window::updateWindow(const std::vector<ModelResults>& results)
 
     processInput();
 
-    //cargar modelo o algo yo que se no se como se hace eso
-
-
     //render
     render(results);
 }
@@ -99,8 +119,12 @@ void Window::processInput() const
 
 void Window::render(const std::vector<ModelResults>& results)
 {
+    //limpiamos la pantalla esto es como volver a fp1
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-    //llamar al render del modelo o algo no se como va esto
+    //renderizar el modelo
+    renderModel();
 
     //renderizamos las ventanas de imgui
     renderImgui(results);
@@ -144,6 +168,61 @@ bool Window::initGlfw()
     return true;
 }
 
+bool Window::initOpenGL()
+{
+    // pillamos los shaders
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    // los compilamos
+    int success;
+    char infoLog[512];
+    //primero el de vertices
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        return false;
+    }
+
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    //lo mismo pero con el de fragmentos
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+        return false;
+    }
+
+    //los linkamos al shader program
+    _shaderProgram = glCreateProgram();
+    glAttachShader(_shaderProgram, vertexShader);
+    glAttachShader(_shaderProgram, fragmentShader);
+    glLinkProgram(_shaderProgram);
+
+    //comprobamos que estan linkados
+    glGetProgramiv(_shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(_shaderProgram, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        return false;
+    }
+
+    //los borramos porque ya estan en el shader program
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    //importante generar los buffers que usara opengl
+    glGenVertexArrays(1, &_vao);
+    glGenBuffers(1, &_vbo);
+
+    return true;
+}
+
 bool Window::initImgui() const
 {
     // Setup Dear ImGui context
@@ -178,8 +257,6 @@ void Window::renderImgui(const std::vector<ModelResults>& results)
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
     //pruebita 
     //static bool abierto = true;
     //panelCustomPrueba(&abierto);
@@ -192,8 +269,6 @@ void Window::renderImgui(const std::vector<ModelResults>& results)
     int display_w, display_h;
     glfwGetFramebufferSize(_glfwWindow, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
-    glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-    glClear(GL_COLOR_BUFFER_BIT);
 
     // If you are using this code with non-legacy OpenGL header/contexts (which you should not, prefer using imgui_impl_opengl3.cpp!!),
     // you may need to backup/reset/restore other state, e.g. for current shader using the commented lines below.
@@ -202,6 +277,83 @@ void Window::renderImgui(const std::vector<ModelResults>& results)
     //glUseProgram(0);
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
     //glUseProgram(last_program);
+}
+
+void Window::renderModel()
+{
+    //nos saltamos renderizar esto si no hay nada en el buffer
+    if (_bufferCount == 0) return;
+
+    //Dibujar el objeto que haya en el buffer de vertices
+    glUseProgram(_shaderProgram);
+    glBindVertexArray(_vao);
+
+    //esto habra que cambiarlo para usar lo que tenga el modelo, quizas cambiar la primitiva todo depende de como se haga el setModelToBuffers()
+    glDrawArrays(GL_TRIANGLES, 0, _bufferCount);
+
+    // Reseteamos las cosas para que imgui no implosione
+    glUseProgram(0);
+    glBindVertexArray(0);
+}
+
+void Window::setModelToBuffers(const ModelResults& result)
+{
+
+    //para el psicopata que haga lo de mostrar los modelos hay que cargar las cosas de result, ese es el modelo seleccionado,
+    //de momento esta solo esta tonteria del triangulo o cuadrado para comprobar que todo funciona
+
+    std::vector<float> vertices;
+
+    if(result.index == 0)
+    {
+        //un triangulo muy chulo
+        vertices = {
+            -0.5f, -0.5f, 0.0f,
+             0.5f, -0.5f, 0.0f,
+             0.0f,  0.5f, 0.0f 
+        };
+        _bufferCount = 3;
+    }
+    else
+    {
+        //un cuadrado por ejemplo
+        vertices = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.5f,  0.5f, 0.0f,
+            -0.5f,  0.5f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+            0.5f,  0.5f, 0.0f
+        };
+        _bufferCount = 6;
+    }
+
+    //bindear buffers
+    glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+    // Pillamos el parametro aPos del shader
+    GLint posAttrib = glGetAttribLocation(_shaderProgram, "aPos");
+
+    /**
+     * Como se debe interpretar vertex data. Parametros en orden:
+     * - Como en el vertex shader el parametro que queremos pasar esta en aPos lo pasamos aqui
+     * - Num valores que tiene el vertice (nosotros tenemos 3 floats porque solo guardamos posicion pero podriamos tener mas cosas)
+     * - Tipo de los datos a pasar
+     * - Si queremos normalizar los datos
+     * - Tamano entre cada vertice. En este caso sabemos que el array de los vertices esta compacto perfectamente (no hay huecos en memoria entre vertices)
+     * por lo que como cada vertice tiene 3 floats la distancia entre un vertice y otro es 3*sizeof(float). En caso de que un array este perfectamente compacto
+     * se puede dejar que sea OpenGL quien defina esta distancia poniendole el valor 0
+     *  - Offset de donde esta la primera posicion de datos en el buffer (en este caso 0 al estar al principio del array)
+     **/
+    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(posAttrib);
+
+    // unbindeamos para que imgui no se rompa
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
 }
 
 void Window::createPanel(const std::vector<ModelResults>& results)
@@ -288,6 +440,11 @@ void Window::createResultDropdown(const ModelResults& result, int index, bool bu
 
                 ImGui::SameLine();
                 ImGui::TextColored(val.passed ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), val.passed ? "Aprobado" : "Suspenso");
+            }
+            if (ImGui::Button("Display model"))
+            {
+                //para setear la info de los modelos a los buffers de opengl
+                setModelToBuffers(result);
             }
         }
     }

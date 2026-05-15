@@ -27,8 +27,11 @@ private:
     void processInput() const;
     void render(const std::vector<ModelResults>& results);
     bool initGlfw();
+    bool initOpenGL();
     bool initImgui() const;
     void renderImgui(const std::vector<ModelResults>& results);
+    void renderModel();
+    void setModelToBuffers(const ModelResults& result);
 
     void createPanel(const std::vector<ModelResults>& results);
 
@@ -41,6 +44,11 @@ private:
     GLFWwindow* _glfwWindow;
     std::vector<std::string> _modelNames;
 
+    //buffers y cosas de opengl
+    unsigned int _vao, _vbo, _shaderProgram;
+
+    //indica cuanto tiene que leer del buffer el gldrawarrays
+    int _bufferCount;
+
     bool _collapsed;
-    int selectedIndex;
 };
