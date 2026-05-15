@@ -15,7 +15,7 @@ public:
     ValidatorManager();
     ~ValidatorManager();
 
-    void runValidations(const FbxScene* scene, Results& results) const;
+    void runValidations(const FbxScene* scene, ModelResults& results) const;
 
 private:
     std::vector<std::unique_ptr<Validation>> _validations;

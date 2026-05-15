@@ -4,7 +4,7 @@
 class Prueba1Validation : public Validation
 {
 public:
-    void validate(const FbxScene* fbx, Results& results) override;
+    void validate(const FbxScene* fbx, ModelResults& results) override;
 };
 
 

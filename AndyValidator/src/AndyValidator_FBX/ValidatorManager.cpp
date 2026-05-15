@@ -33,7 +33,7 @@ ValidatorManager::ValidatorManager()
 
 ValidatorManager::~ValidatorManager() = default;
 
-void ValidatorManager::runValidations(const FbxScene* model, Results& fileResults) const
+void ValidatorManager::runValidations(const FbxScene* model, ModelResults& fileResults) const
 {
     for (const auto& validation : _validations)
     {

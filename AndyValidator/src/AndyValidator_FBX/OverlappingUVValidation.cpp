@@ -1,12 +1,18 @@
 #include "AndyValidator_FBX/OverlappingUVValidation.h"
 #include <algorithm>
 
-void OverlappingUVValidation::validate(const FbxScene* fbx, Results& results)
+void OverlappingUVValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     bool success = checkOverlapping(fbx->GetRootNode());
 
     if (!success) results.allTestsPassed = false;
-    results.validations.emplace_back(OverlappingUVTest, success);
+
+    ValidationResult res;
+    res.type = OverlappingUVTest;
+    res.description = "Comprueba si hay UVs que se superpongan";
+    res.passed = success;
+
+    results.validations.emplace_back(res);
 }
 
 bool OverlappingUVValidation::checkOverlapping(FbxNode* node)

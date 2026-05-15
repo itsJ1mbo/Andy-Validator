@@ -2,7 +2,7 @@
 #include "AndyValidator_FBX/FBX.h"
 #include <string>
 
-void CollidersValidation::validate(const FbxScene* fbx, Results& results)
+void CollidersValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     Config cfg = FBX::instance().getConfig();
 
@@ -11,7 +11,12 @@ void CollidersValidation::validate(const FbxScene* fbx, Results& results)
     if (!validationResult)
         results.allTestsPassed = false;
 
-    results.validations.emplace_back(CollidersTest, validationResult);
+    ValidationResult res;
+    res.type = CollidersTest;
+    res.description = "Comprueba si el modelo cuenta con una malla simple para las colisiones de Unreal (prefijo UCX_)";
+    res.passed = validationResult;
+
+    results.validations.emplace_back(res);
 }
 
 bool CollidersValidation::checkColliders(FbxNode* node, bool isUnreal)

@@ -2,12 +2,18 @@
 
 #include <iostream>
 
-void PivotValidation::validate(const FbxScene* fbx, Results& results)
+void PivotValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     bool validationResult = validPivot(fbx->GetRootNode());
     if (!validationResult)
         results.allTestsPassed = false;
-    results.validations.emplace_back(PivotTest, validationResult);
+
+    ValidationResult res;
+    res.type = PivotTest;
+    res.description = "Comprueba si el punto de pivote esta en la base o en el centro de masa del objeto";
+    res.passed = validationResult;
+
+    results.validations.emplace_back(res);
 }
 
 bool PivotValidation::validPivot(FbxNode* node)

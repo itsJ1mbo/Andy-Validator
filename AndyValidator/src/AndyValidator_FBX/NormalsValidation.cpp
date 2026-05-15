@@ -3,12 +3,18 @@
 #include <map>
 
 
-void NormalsValidation::validate(const FbxScene* fbx, Results& results)
+void NormalsValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     bool validationResult = checkNormals(fbx->GetRootNode());
     if (!validationResult)
         results.allTestsPassed = false;
-    results.validations.emplace_back(NormalsTest, validationResult);
+
+    ValidationResult res;
+    res.type = NormalsTest;
+    res.description = "Comprueba si las normales estan orientadas correctamente";
+    res.passed = validationResult;
+
+    results.validations.emplace_back(res);
 }
 
 bool NormalsValidation::checkNormals(FbxNode* node)

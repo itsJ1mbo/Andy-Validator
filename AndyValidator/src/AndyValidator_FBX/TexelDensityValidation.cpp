@@ -4,7 +4,7 @@
 #include <limits>
 #include <vector>
 
-void TexelDensityValidation::validate(const FbxScene* fbx, Results& results)
+void TexelDensityValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     double minDensity = std::numeric_limits<double>::max();
     double maxDensity = 0.0;
@@ -30,7 +30,12 @@ void TexelDensityValidation::validate(const FbxScene* fbx, Results& results)
     if (!success) 
         results.allTestsPassed = false;
 
-    results.validations.emplace_back(TexelDensityTest, success);
+    ValidationResult res;
+    res.type = TexelDensityTest;
+    res.description = "Comprueba si la densidad de los texels es consistente en todo el modelo acorde a la configuracion del .cfg";
+    res.passed = success;
+
+    results.validations.emplace_back(res);
 }
 
 bool TexelDensityValidation::checkTexelDensity(FbxNode* node, double& minDensity, double& maxDensity)

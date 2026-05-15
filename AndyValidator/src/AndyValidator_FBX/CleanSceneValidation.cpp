@@ -1,6 +1,6 @@
 #include "AndyValidator_FBX/CleanSceneValidation.h"
 
-void CleanSceneValidation::validate(const FbxScene* fbx, Results& results)
+void CleanSceneValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     bool nodesClean = checkCleanliness(fbx->GetRootNode());
     bool layersClean = checkDisplayLayers(fbx);
@@ -10,7 +10,12 @@ void CleanSceneValidation::validate(const FbxScene* fbx, Results& results)
     if (!validationResult)
         results.allTestsPassed = false;
 
-    results.validations.emplace_back(CleanSceneTest, validationResult);
+    ValidationResult res;
+    res.type = CleanSceneTest;
+    res.description = "Comprueba si se han borrado historial, capas vacías, luces o cámaras que se hayan quedado en el archivo";
+    res.passed = validationResult;
+
+    results.validations.emplace_back(res);
 }
 
 bool CleanSceneValidation::checkDisplayLayers(const FbxScene* fbx)

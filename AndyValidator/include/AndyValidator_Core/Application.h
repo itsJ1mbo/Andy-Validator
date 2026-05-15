@@ -20,6 +20,6 @@ public:
 private:
 	std::unique_ptr<Loader> _loader;
 
-	std::vector<Results> _results;
+	std::vector<ModelResults> _results;
 };
 

@@ -22,7 +22,7 @@ public:
 
 	void start(const std::vector<std::string>& files, const Config config);
 
-	std::vector<Results> checkNewResults();
+	std::vector<ModelResults> checkNewResults();
 	Config getConfig() const
 	{
 		return _cfg;
@@ -49,7 +49,7 @@ private:
 
 	std::jthread _thread;
 	std::mutex _mutex;
-	std::vector<Results> _resultsBuffer;
+	std::vector<ModelResults> _resultsBuffer;
 
 	std::atomic<bool> _isRunning{ false };
 	std::atomic<bool> _hasNewData{ false };

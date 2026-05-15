@@ -65,11 +65,18 @@ struct Config
     double texelDensityTolerance = 1.30;
 };
 
-struct Results
+struct ValidationResult
+{
+    ValidationType type;
+    std::string description;
+    bool passed;
+};
+
+struct ModelResults
 {
     std::optional<size_t> index;
     std::string fileName;
     ModelData model;
     bool allTestsPassed = true;
-    std::vector<std::pair<ValidationType, bool>> validations;
+    std::vector<ValidationResult> validations;
 };

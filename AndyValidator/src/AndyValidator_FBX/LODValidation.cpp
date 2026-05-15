@@ -3,13 +3,19 @@
 #include <regex>
 #include <string>
 
-void LODValidation::validate(const FbxScene* fbx, Results& results)
+void LODValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     bool lodValid = checkLODNames(fbx->GetRootNode());  // Llamamos que compruebe todos los nodos
 
-    results.validations.push_back({ ValidationType::LODTest, lodValid });
+    if (!lodValid) 
+        results.allTestsPassed = false;
 
-    if (!lodValid) results.allTestsPassed = false;
+    ValidationResult res;
+    res.type = LODTest;
+    res.description = "Comprueba si el objeto tiene LODs con el prefijo correcto";
+    res.passed = lodValid;
+
+    results.validations.push_back(res);
 }
 
 bool LODValidation::checkLODNames(FbxNode* node)

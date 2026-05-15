@@ -1,11 +1,17 @@
 #include "AndyValidator_FBX/VertexValidation.h"
 
-void VertexValidation::validate(const FbxScene* fbx, Results& results)
+void VertexValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     bool validationResult = validPolygon(fbx->GetRootNode());
     if (!validationResult)
         results.allTestsPassed = false;
-    results.validations.emplace_back(VertexTest, validationResult);
+
+    ValidationResult res;
+    res.type = VertexTest;
+    res.description = "Comprueba si las caras del modelo no superan los 4 vertices";
+    res.passed = validationResult;
+
+    results.validations.emplace_back(res);
 }
 
 bool VertexValidation::validPolygon(FbxNode* node)

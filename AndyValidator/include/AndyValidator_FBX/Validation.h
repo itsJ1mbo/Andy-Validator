@@ -9,6 +9,6 @@ class Validation
 public:
 	virtual ~Validation() = default;
 
-	virtual void validate(const FbxScene* fbx, Results& results) = 0;
+	virtual void validate(const FbxScene* fbx, ModelResults& results) = 0;
 };
 

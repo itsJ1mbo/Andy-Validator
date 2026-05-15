@@ -1,13 +1,19 @@
 #include "AndyValidator_FBX/PolygonValidation.h"
 #include "AndyValidator_FBX/FBX.h"
 
-void PolygonValidation::validate(const FbxScene* fbx, Results& results)
+void PolygonValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     int totalPolygons = countPolygons(fbx->GetRootNode());
     bool validationResult = (totalPolygons <= FBX::instance().getConfig().polygons);
     if (!validationResult)
         results.allTestsPassed = false;
-    results.validations.emplace_back(PolygonTest, validationResult);
+
+    ValidationResult res;
+    res.type = PolygonTest;
+    res.description = "Comprueba si el numero de poligonos del modelo es menor que el configurado en el .cfg";
+    res.passed = validationResult;
+
+    results.validations.emplace_back(res);
 }
 
 int PolygonValidation::countPolygons(FbxNode* node)

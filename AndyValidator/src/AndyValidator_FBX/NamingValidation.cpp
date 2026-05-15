@@ -2,7 +2,7 @@
 #include "AndyValidator_FBX/FBX.h"  // Lo necesitamos para el config
 #include <regex>
 
-void NamingValidation::validate(const FbxScene* fbx, Results& results)
+void NamingValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     Config cfg = FBX::instance().getConfig();
     std::string nameString = "";
@@ -28,7 +28,13 @@ void NamingValidation::validate(const FbxScene* fbx, Results& results)
     std::regex namingNomenclature(nameString);
     bool nameValid = std::regex_match(results.fileName, namingNomenclature);
 
-    results.validations.push_back({ ValidationType::NamingTest, nameValid });
+    if (!nameValid)
+        results.allTestsPassed = false;
 
-    if (!nameValid) results.allTestsPassed = false;
+    ValidationResult res;
+    res.type = NamingTest;
+    res.description = "Comprueba si el archivo sigue el criterio de nombres";
+    res.passed = nameValid;
+
+    results.validations.push_back(res);
 }

@@ -69,7 +69,7 @@ bool Window::shouldWindowClose() const
     return glfwWindowShouldClose(_glfwWindow);
 }
 
-void Window::updateWindow(const std::vector<Results>& results) const
+void Window::updateWindow(const std::vector<ModelResults>& results) const
 {
     //eventos ventana
     glfwPollEvents();
@@ -97,7 +97,7 @@ void Window::processInput() const
         glfwSetWindowShouldClose(_glfwWindow, true);
 }
 
-void Window::render(const std::vector<Results>& results) const
+void Window::render(const std::vector<ModelResults>& results) const
 {
 
     //llamar al render del modelo o algo no se como va esto
@@ -170,7 +170,7 @@ bool Window::initImgui() const
     return true;
 }
 
-void Window::renderImgui(const std::vector<Results>& results) const
+void Window::renderImgui(const std::vector<ModelResults>& results) const
 {
 
     // Start the Dear ImGui frame
@@ -204,7 +204,7 @@ void Window::renderImgui(const std::vector<Results>& results) const
     //glUseProgram(last_program);
 }
 
-void Window::createPanel(const std::vector<Results>& results) const
+void Window::createPanel(const std::vector<ModelResults>& results) const
 {
     //primero le damos tamaño, usamos el mainviewport (en vez de _width y _height) 
     //junto con la flag de always para que este escalado se aplique siempre y no solo una vez al principio
@@ -231,7 +231,7 @@ void Window::createPanel(const std::vector<Results>& results) const
     ImGui::End();
 }
 
-void Window::createResultDropdown(const Results& result, int index) const
+void Window::createResultDropdown(const ModelResults& result, int index) const
 {
     //podemos pasarle la direccion de memoria del resultado a imgui como id para que cada dropdown sea independiente de los demas
     ImGui::PushID(&result);
@@ -241,14 +241,15 @@ void Window::createResultDropdown(const Results& result, int index) const
     //(si estuviera dentro de la condicion de abierto solo se ejecutaria cuando el header estuviera abierto)
     bool abierto = ImGui::CollapsingHeader(_modelNames[index].c_str());
 
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip(_modelNames[index].c_str());
+
     ImGui::SameLine();
     if (!result.index.has_value())
         ImGui::TextColored(ImVec4(1, 1, 1, 1), "(Pendiente)");
     else
         ImGui::TextColored(result.allTestsPassed ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), result.allTestsPassed ? "(Aprobado)" : "(Suspenso)");
 
-    if (ImGui::IsItemHovered())
-        ImGui::SetTooltip(_modelNames[index].c_str());
 
     if (abierto)
     {
@@ -256,14 +257,19 @@ void Window::createResultDropdown(const Results& result, int index) const
             ImGui::Text("Pendiente por validar.");
         }
         else {
-            for(auto val : result.validations)
+            for(ValidationResult val : result.validations)
             {
                 ImGui::BulletText("Resultado de");
                 ImGui::SameLine();
                 //libreria magica que convierte de enum a string
-                ImGui::Text(magic_enum::enum_name(val.first).data());
+                ImGui::Text(magic_enum::enum_name(val.type).data());
+
+                //tooltip de descripcion del test
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip(val.description.c_str());
+
                 ImGui::SameLine();
-                ImGui::TextColored(val.second ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), val.second ? "Aprobado" : "Suspenso");
+                ImGui::TextColored(val.passed ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), val.passed ? "Aprobado" : "Suspenso");
             }
         }
     }

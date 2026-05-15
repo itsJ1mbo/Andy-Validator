@@ -2,13 +2,19 @@
 #include <cmath> 
 #include <iostream>
 
-void TransformationsValidation::validate(const FbxScene* fbx, Results& results)
+void TransformationsValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     //evaluamos el nodo raiz
     bool validationResult = checkTransformations(fbx->GetRootNode());
     if (!validationResult)
         results.allTestsPassed = false;
-    results.validations.emplace_back(TransformationsTest, validationResult);
+
+    ValidationResult res;
+    res.type = TransformationsTest;
+    res.description = "Comprueba si las transformaciones del modelo estan aplicadas";
+    res.passed = validationResult;
+
+    results.validations.emplace_back(res);
 }
 
 bool TransformationsValidation::isZero(double value, double epsilon)

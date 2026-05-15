@@ -73,7 +73,7 @@ void FBX::processTask(const std::stop_token& stopToken, const std::vector<std::s
 
         if (model)
         {
-            Results fileResults;
+            ModelResults fileResults;
             fileResults.index = i;
 
             fileResults.fileName = std::filesystem::path(files[i]).filename().string(); // Para la validacion del nombre
@@ -126,9 +126,9 @@ void FBX::stop()
     }
 }
 
-std::vector<Results> FBX::checkNewResults()
+std::vector<ModelResults> FBX::checkNewResults()
 {
-    std::vector<Results> newResults;
+    std::vector<ModelResults> newResults;
 
     if (_hasNewData)
     {

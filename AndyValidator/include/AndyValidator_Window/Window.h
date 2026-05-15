@@ -14,7 +14,7 @@ public:
 
     bool initWindow();
     bool shouldWindowClose() const;
-    void updateWindow(const std::vector<Results>& results) const;
+    void updateWindow(const std::vector<ModelResults>& results) const;
     void setModelNames(const std::vector<std::string>& paths);
 
 private:
@@ -25,14 +25,14 @@ private:
     Window& operator=(const Window&& in) = delete;
 
     void processInput() const;
-    void render(const std::vector<Results>& results) const;
+    void render(const std::vector<ModelResults>& results) const;
     bool initGlfw();
     bool initImgui() const;
-    void renderImgui(const std::vector<Results>& results) const;
+    void renderImgui(const std::vector<ModelResults>& results) const;
 
-    void createPanel(const std::vector<Results>& results) const;
+    void createPanel(const std::vector<ModelResults>& results) const;
 
-    void createResultDropdown(const Results& resultado, int index) const;
+    void createResultDropdown(const ModelResults& resultado, int index) const;
     
     inline static std::unique_ptr<Window> _instance;
 
