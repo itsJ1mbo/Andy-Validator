@@ -28,7 +28,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true)
+Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0)
 {
 
 }
@@ -312,7 +312,8 @@ void Window::setModelToBuffers(const ModelResults& result)
              0.5f, -0.5f, 0.0f,
              0.0f,  0.5f, 0.0f 
         };
-        _bufferCount = 3;
+        _bufferCount = 3; //esto es cuanto tiene que leer opengl del buffer, el tamano cambiara dependiendo de lo que se le meta al buffer,
+        //pero es NECESARIO actualizarlo a lo que tenga el modelo porque si no no va a dibujar todo
     }
     else
     {
