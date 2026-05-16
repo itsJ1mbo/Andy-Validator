@@ -14,5 +14,7 @@ private:
 
     bool isTextureValid(FbxSurfaceMaterial* material);
 
+    bool isPowerOfTwo(int n);
+
 };
 

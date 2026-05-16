@@ -1,4 +1,5 @@
 #include "AndyValidator_FBX/DimensionsValidation.h"
+#include <cmath>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <iostream>
@@ -44,14 +45,7 @@ bool DimensionsValidation::isTextureValid(FbxSurfaceMaterial* material)
                 stbi_info(path, &x, &y, &comp);
                 std::cout << "size " << x << " x " << y << " whatever this means " << comp << "\n";
 
-                //int x = 0, y = 0, comp, req = 0;
-                //stbi_uc* a = stbi_load(textureName, &x, &y, &comp, req);
-
-                //std::cout << "hola " << a << "\n";
-
-               
-
-            
+                return isPowerOfTwo(x) && isPowerOfTwo(y);
             }
 
 
@@ -72,6 +66,19 @@ bool DimensionsValidation::isTextureValid(FbxSurfaceMaterial* material)
          
         return false;
     
+
+}
+
+bool DimensionsValidation::isPowerOfTwo(int n)
+{
+    if(n <= 0)
+        return false;  
+
+    // calculamos la base del logaritmo de 2
+    int logValue = log2(n);
+
+    // confirmamos si sirve como potencia
+    return pow(2, logValue) == n;
 
 }
 
