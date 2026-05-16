@@ -1,4 +1,5 @@
 #include "AndyValidator_FBX/DimensionsValidation.h"
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <iostream>
 
@@ -29,10 +30,21 @@ bool DimensionsValidation::isTextureValid(FbxSurfaceMaterial* material)
     {
         for (int j = 0; j < textureCount; j++)
         {
+            // saca la textura y su nombre
+            FbxTexture* texture = FbxCast<FbxTexture>(prop.GetSrcObject<FbxFileTexture>());
+            const char* textureName = texture->GetName();
 
-            std::cout << "hola \n";
+            FbxFileTexture* file = FbxCast<FbxFileTexture>(texture);
+            if (file != nullptr) {
+                FbxString path = file->GetFileName();
 
-            FbxTexture* texture = FbxCast<FbxTexture>(material->GetSrcObject<FbxFileTexture>(j));
+                std::cout << "hola " << path << "\n";
+            
+
+                int x = 0, y = 0, comp, req = 0;
+                stbi_load(textureName, &x, &y, &comp, req);
+            
+            }
 
 
             //FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(prop.GetSrcObject<FbxLayeredTexture>(j));
