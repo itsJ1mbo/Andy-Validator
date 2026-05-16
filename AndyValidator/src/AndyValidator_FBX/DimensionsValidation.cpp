@@ -24,7 +24,6 @@ bool DimensionsValidation::isTextureValid(FbxSurfaceMaterial* material)
 
     // cuenta el numero de texturas que tiene
     int textureCount = prop.GetSrcObjectCount<FbxTexture>();
-    //std::cout << "hola " << layeredTextureCount << "\n";
 
     if (textureCount > 0)
     {
@@ -40,9 +39,18 @@ bool DimensionsValidation::isTextureValid(FbxSurfaceMaterial* material)
 
                 std::cout << "hola " << path << "\n";
             
+                int x, y, comp;
 
-                int x = 0, y = 0, comp, req = 0;
-                stbi_load(textureName, &x, &y, &comp, req);
+                stbi_info(path, &x, &y, &comp);
+                std::cout << "size " << x << " x " << y << " whatever this means " << comp << "\n";
+
+                //int x = 0, y = 0, comp, req = 0;
+                //stbi_uc* a = stbi_load(textureName, &x, &y, &comp, req);
+
+                //std::cout << "hola " << a << "\n";
+
+               
+
             
             }
 
