@@ -121,31 +121,46 @@ MeshData ImportManager::processMesh(FbxMesh* mesh)
             FbxGeometryElementNormal* normalElement = mesh->GetElementNormal(0);
             if (normalElement)
             {
-                FbxVector4 fbxNormal;
+                int normalMapIndex = 0;
                 if (normalElement->GetMappingMode() == FbxGeometryElement::eByPolygonVertex) {
-                    fbxNormal = normalElement->GetDirectArray().GetAt(vertexCounter);
+                    normalMapIndex = vertexCounter;
                 }
                 else if (normalElement->GetMappingMode() == FbxGeometryElement::eByControlPoint) {
-                    fbxNormal = normalElement->GetDirectArray().GetAt(cpIndex);
+                    normalMapIndex = cpIndex;
                 }
+
+                int finalNormalIndex = normalMapIndex;
+                if (normalElement->GetReferenceMode() == FbxGeometryElement::eIndexToDirect) {
+                    finalNormalIndex = normalElement->GetIndexArray().GetAt(normalMapIndex);
+                }
+
+                FbxVector4 fbxNormal = normalElement->GetDirectArray().GetAt(finalNormalIndex);
 
                 vertex.normal.x = static_cast<float>(fbxNormal[0]);
                 vertex.normal.y = static_cast<float>(fbxNormal[1]);
                 vertex.normal.z = static_cast<float>(fbxNormal[2]);
             }
+            else {
+                vertex.normal = glm::vec3(0.0f, 1.0f, 0.0f);
+            }
 
             FbxGeometryElementUV* uvElement = mesh->GetElementUV(0);
             if (uvElement)
             {
-                int uvIndex = 0;
-                if (uvElement->GetReferenceMode() == FbxGeometryElement::eDirect) {
-                    uvIndex = vertexCounter;
+                int uvMapIndex = 0;
+                if (uvElement->GetMappingMode() == FbxGeometryElement::eByPolygonVertex) {
+                    uvMapIndex = vertexCounter;
                 }
-                else if (uvElement->GetReferenceMode() == FbxGeometryElement::eIndexToDirect) {
-                    uvIndex = uvElement->GetIndexArray().GetAt(vertexCounter);
+                else if (uvElement->GetMappingMode() == FbxGeometryElement::eByControlPoint) {
+                    uvMapIndex = cpIndex;
                 }
 
-                FbxVector2 fbxUV = uvElement->GetDirectArray().GetAt(uvIndex);
+                int finalUvIndex = uvMapIndex;
+                if (uvElement->GetReferenceMode() == FbxGeometryElement::eIndexToDirect) {
+                    finalUvIndex = uvElement->GetIndexArray().GetAt(uvMapIndex);
+                }
+
+                FbxVector2 fbxUV = uvElement->GetDirectArray().GetAt(finalUvIndex);
                 vertex.texCoords.x = static_cast<float>(fbxUV[0]);
                 vertex.texCoords.y = static_cast<float>(fbxUV[1]);
             }

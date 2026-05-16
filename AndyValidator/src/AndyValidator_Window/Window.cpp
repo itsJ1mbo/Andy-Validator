@@ -14,32 +14,45 @@
 
 const char* vertexShaderSource = "#version 120\n"
 "attribute vec3 aPos;\n"
-"attribute vec2 aTexCoord;\n" // este para setearlo
-"varying vec2 TexCoord;\n"     // este para pasarselo al shader de fragmentos
+"attribute vec2 aTexCoord;\n"
+"attribute vec3 aNormal;\n"
+"varying vec2 TexCoord;\n"
+"varying vec3 Normal;\n"
 "uniform mat4 matrix;\n"
+"uniform mat4 modelMat;\n"
 "void main()\n"
 "{\n"
 "    gl_Position = matrix * (vec4(aPos, 1.0));\n"
 "    TexCoord = aTexCoord;\n"
+"    \n"
+"    Normal = mat3(modelMat) * aNormal;\n" //basicamente trasladamos las normales lo mismo que transformamos todo el modelo para tener iluminacion realista en vez de quedarse "pegada"
 "}\n";
 
 const char* fragmentShaderSource = "#version 120\n"
 "varying vec2 TexCoord;\n"
+"varying vec3 Normal;\n"
 "uniform sampler2D texture0;\n"
 "uniform sampler2D texture1;\n"
 "void main()\n"
 "{\n"
-"    float ambientStrength = 1.0;\n"
+"    float ambientStrength = 0.2;\n" //calculamos la luz de ambiente
 "    vec3 lightColor = vec3(1.0, 1.0, 1.0);\n"
 "    vec3 ambient = ambientStrength * lightColor;\n"
-"    vec4 color0 = texture2D(texture0, TexCoord);\n"
+"    \n"
+"    vec3 norm = normalize(Normal);\n" //calculamos luz direccional
+"    vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));\n"
+"    float diff = max(dot(norm, lightDir), 0.0);\n"
+"    vec3 diffuse = diff * lightColor;\n"
+"    \n"
+"    vec4 color0 = texture2D(texture0, TexCoord);\n" //las texturas y eso
 "    vec4 color1 = texture2D(texture1, TexCoord);\n"
-"    vec4 objectColor = color0;\n" //si la segunda textura tiene cosas entonces la blendeamos, si no usamos solo la primera
+"    vec4 objectColor = color0;\n"
 "    if (color1.a > 0.0) {\n"
 "        objectColor = mix(color0, color1, 0.5);\n"
 "    }\n"
-"    vec3 result = ambient * objectColor.rgb;\n"
-"    gl_FragColor = vec4(result, objectColor.a);\n"
+"    vec3 lighting = (ambient + diffuse);\n" //juntamos todo, bendito sea marco antonio y las clases de ilm por hacerme entender como funciona la luz
+"    vec3 result = lighting * objectColor.rgb;\n"
+"    gl_FragColor = vec4(norm, 1.0);\n"
 "}\n";
 
 
@@ -257,7 +270,7 @@ bool Window::initOpenGL()
     //le metemos el culling para las normales 
     glEnable(GL_CULL_FACE);
     //decidimos no ocultar ninguno de los dos lados de la cara para poder visualizar bien si hay alguna normal flippeada
-    glCullFace(GL_NONE);
+    glCullFace(GL_BACK);
     
     //importante generar los buffers que usara opengl
     glGenVertexArrays(1, &_vao);
@@ -387,13 +400,19 @@ void Window::renderModel()
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
 
     glm::mat4 model = glm::mat4(1.0f);
-    //lo movemos a la derecha para que no lo tape el panel de imgui (si es un numero magico muy raro puesto a base de prueba y error)
+    // lo movemos a la derecha para que no lo tape el panel de imgui
     model = glm::translate(model, glm::vec3(1.35f, 0.0f, 0.0f));
-    //lo rotamos porque queda muy chulo
+    // lo rotamos porque queda muy chulo
     model = glm::rotate(model, _modelRotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
     _modelRotationAngle += _modelRotationSpeed * ImGui::GetIO().DeltaTime;
-    //lo escalamos para que quepa en la ventana
+    // lo escalamos para que quepa en la ventana
     model = glm::scale(model, glm::vec3(_modelScaleFactor));
+
+    // FIX: Send the pure model matrix to the shader before generating MVP
+    GLint modelMatLoc = glGetUniformLocation(_shaderProgram, "modelMat");
+    if (modelMatLoc != -1) {
+        glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm::value_ptr(model));
+    }
 
     //multiplicamos todas las cosas y magia
     glm::mat4 mvp = projection * view * model;
@@ -549,6 +568,12 @@ void Window::setModelToBuffers(const ModelResults& result)
     GLint texAttrib = glGetAttribLocation(_shaderProgram, "aTexCoord");
     glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
     glEnableVertexAttribArray(texAttrib);
+
+    GLint normAttrib = glGetAttribLocation(_shaderProgram, "aNormal");
+    if (normAttrib != -1) {
+        glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+        glEnableVertexAttribArray(normAttrib);
+    }
 
     // unbindeamos para que imgui no se rompa
     glBindVertexArray(0);
