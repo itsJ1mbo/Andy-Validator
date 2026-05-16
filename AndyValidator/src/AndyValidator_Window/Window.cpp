@@ -52,7 +52,7 @@ const char* fragmentShaderSource = "#version 120\n"
 "    }\n"
 "    vec3 lighting = (ambient + diffuse);\n" //juntamos todo, bendito sea marco antonio y las clases de ilm por hacerme entender como funciona la luz
 "    vec3 result = lighting * objectColor.rgb;\n"
-"    gl_FragColor = vec4(norm, 1.0);\n"
+"    gl_FragColor = vec4(result, objectColor.a);\n"
 "}\n";
 
 
