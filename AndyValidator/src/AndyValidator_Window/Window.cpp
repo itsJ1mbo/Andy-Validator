@@ -7,22 +7,31 @@
 #include "magicEnum/magic_enum.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "stb_image.h"
 #include <iostream>
 #include <filesystem>
 #include <utility>
 
 const char* vertexShaderSource = "#version 120\n"
 "attribute vec3 aPos;\n"
+"attribute vec2 aTexCoord;\n" // este para setearlo
+"varying vec2 TexCoord;\n"     // este para pasarselo al shader de fragmentos
 "uniform mat4 matrix;\n"
 "void main()\n"
 "{\n"
 "    gl_Position = matrix * (vec4(aPos, 1.0));\n"
+"    TexCoord = aTexCoord;\n"
 "}\n";
 
 const char* fragmentShaderSource = "#version 120\n"
+"varying vec2 TexCoord;\n"
+"uniform sampler2D texture0;\n"
+"uniform sampler2D texture1;\n"
 "void main()\n"
 "{\n"
-"    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n" // gl_FragColor es el color con el que se pintan los objetos
+"    vec4 color0 = texture2D(texture0, TexCoord);\n" //pillamos el color del fragmento para cada textura
+"    vec4 color1 = texture2D(texture1, TexCoord);\n"
+"    gl_FragColor = mix(color0, color1, 0.5);\n" //por ejemplo los mezclamos
 "}\n";
 
 
@@ -56,8 +65,12 @@ bool Window::init()
     return initWindow();
 }
 
-void Window::free() const
+void Window::free()
 {
+    if (!_activeTextures.empty()) {
+        glDeleteTextures((GLsizei)_activeTextures.size(), _activeTextures.data());
+        _activeTextures.clear();
+    }
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);
     glDeleteBuffers(1, &_ebo);
@@ -187,7 +200,9 @@ bool Window::initOpenGL()
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if(!success) {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+#if _DEBUG
         std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+#endif
         return false;
     }
 
@@ -199,7 +214,9 @@ bool Window::initOpenGL()
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if(!success) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+#if _DEBUG
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+#endif
         return false;
     }
 
@@ -213,7 +230,9 @@ bool Window::initOpenGL()
     glGetProgramiv(_shaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(_shaderProgram, 512, NULL, infoLog);
+#if _DEBUG
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+#endif
         return false;
     }
 
@@ -224,6 +243,10 @@ bool Window::initOpenGL()
     //depth test para que no se solapen mal
     glEnable(GL_DEPTH_TEST);
 
+    //le metemos el culling de caras traseras para las normales
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    
     //importante generar los buffers que usara opengl
     glGenVertexArrays(1, &_vao);
     glGenBuffers(1, &_vbo);
@@ -297,6 +320,22 @@ void Window::renderModel()
     //le decimos que use los shaders que hemos cargado antes
     glUseProgram(_shaderProgram);
 
+    for (size_t i = 0; i < _activeTextures.size(); ++i)
+    {
+        //bindeamos la textura
+        glActiveTexture(GL_TEXTURE0 + (GLenum)i);
+        glBindTexture(GL_TEXTURE_2D, _activeTextures[i]);
+
+        //sacamos del shader el parametro de textura correspondiente
+        std::string uniformName = "texture" + std::to_string(i);
+        GLint texLoc = glGetUniformLocation(_shaderProgram, uniformName.c_str());
+
+        //lo asignamos (comprobando primero si el shader que tenemos tiene ese parametro)
+        if (texLoc != -1) {
+            glUniform1i(texLoc, (GLint)i);
+        }
+    }
+
     //pillamos del shader el parametro
     GLint transformLoc = glGetUniformLocation(_shaderProgram, "matrix");
 
@@ -319,17 +358,24 @@ void Window::renderModel()
     //multiplicamos todas las cosas y magia
     glm::mat4 mvp = projection * view * model;
 
-    //mandar cosas a gpu
+    //mandar la matriz al shader
     glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(mvp));
+
+    //bindear el vertex array object
     glBindVertexArray(_vao);
 
     //pum dibuja
     glDrawElements(GL_TRIANGLES, _bufferCount, GL_UNSIGNED_INT, 0);
 
-    //reseteamos las cosas para que imgui no implosione
+    //limpiamos esto para que imgui no se rompa
+    for (size_t i = 0; i < _activeTextures.size(); ++i) {
+        glActiveTexture(GL_TEXTURE0 + (GLenum)i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
     glUseProgram(0);
     glBindVertexArray(0);
 }
+
 void Window::setModelToBuffers(const ModelResults& result)
 {
     //reiniciamos la rotacion del modelo al cambiar
@@ -341,6 +387,7 @@ void Window::setModelToBuffers(const ModelResults& result)
 
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
+    std::vector<std::string> texturePaths;
     //esto es porque un fbx puede tener varias meshes y los indices empiezan para cada una en el 0,
     //enotnces necesitamos esto para evitar solapamientos raros
     unsigned int vertexOffset = 0;
@@ -350,7 +397,8 @@ void Window::setModelToBuffers(const ModelResults& result)
     {
         for(const auto& v : mesh.vertexes)
         {
-            vertices.push_back(v);
+            //aqui ya metemos toda la informacion del vertice: posicion, normales, coordenadas de textura (esto importa para mas tarde)
+            vertices.push_back(v); 
             minBound = glm::min(minBound, v.position);
             maxBound = glm::max(maxBound, v.position);
         }
@@ -358,6 +406,11 @@ void Window::setModelToBuffers(const ModelResults& result)
         for(int idx : mesh.indexes)
         {
             indices.push_back(idx + vertexOffset);
+        }
+
+        for(const auto& t : mesh.textures)
+        {
+            texturePaths.push_back(t.filePath);
         }
 
         vertexOffset += (unsigned int)mesh.vertexes.size();
@@ -374,6 +427,54 @@ void Window::setModelToBuffers(const ModelResults& result)
     //esto es cuanto tiene que leer opengl del buffer, el tamano cambiara dependiendo de lo que se le meta al buffer,
     //pero es NECESARIO actualizarlo a lo que tenga el modelo porque si no no va a dibujar todo
     _bufferCount = (GLsizei)indices.size();
+
+    //borramos las texturas anteriores si las hubiera
+    if (!_activeTextures.empty()) {
+        glDeleteTextures((GLsizei)_activeTextures.size(), _activeTextures.data());
+        _activeTextures.clear();
+    }
+
+    //por lo visto lo de que las texturas se carguen del reves es algo tipico y hay una funcion para ello lmao
+    stbi_set_flip_vertically_on_load(true);
+
+    for(const auto& texturePath : texturePaths )
+    {
+        //pum texturas (todo esto es mucha magia sacada de learnopengl)
+        unsigned int texId;
+        glGenTextures(1, &texId);
+        glBindTexture(GL_TEXTURE_2D, texId);
+
+        //ajustes de como wrappean las texturas y el filtro que se les aplica
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        int width, height, nrChannels;
+        unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            //esto permite tener transparencias en base 
+            GLenum format = GL_RGB;
+            if (nrChannels == 1)      format = GL_RED;
+            else if (nrChannels == 4) format = GL_RGBA;
+
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            //nos guardamos la textura porque no queremos memory leaks
+            _activeTextures.push_back(texId);
+        }
+        else {
+#if _DEBUG
+            std::cout << "Failed to load texture: " << texturePath << std::endl;
+#endif
+            //si falla borramos lo que hemos creado
+            glDeleteTextures(1, &texId);
+        }
+        //una vez generada la textura podemos liberar esto
+        stbi_image_free(data);
+    }
 
     //bindear buffers
     glBindVertexArray(_vao);
@@ -401,11 +502,16 @@ void Window::setModelToBuffers(const ModelResults& result)
     glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
     glEnableVertexAttribArray(posAttrib);
 
+    GLint texAttrib = glGetAttribLocation(_shaderProgram, "aTexCoord");
+    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+    glEnableVertexAttribArray(texAttrib);
+
     // unbindeamos para que imgui no se rompa
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
+
 void Window::createPanel(const std::vector<ModelResults>& results)
 {
     //primero le damos tamaño, usamos el mainviewport (en vez de _width y _height) 

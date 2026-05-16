@@ -10,7 +10,7 @@ public:
     static Window& instance();
 
     bool init();
-    void free() const;
+    void free();
 
     bool initWindow();
     bool shouldWindowClose() const;
@@ -47,6 +47,12 @@ private:
     //buffers y cosas de opengl
     unsigned int _vao, _vbo, _ebo, _shaderProgram;
 
+    //indica cuanto tiene que leer del buffer el gldrawarrays
+    int _bufferCount;
+
+    //vector con ids texturas actuales
+    std::vector<unsigned int> _activeTextures;
+
     //cosas de la rotacion del modelo
     float _modelRotationAngle;
     float _modelRotationSpeed;
@@ -55,8 +61,7 @@ private:
     glm::vec3 _modelCenter;
     float _modelScaleFactor;
 
-    //indica cuanto tiene que leer del buffer el gldrawarrays
-    int _bufferCount;
 
     bool _collapsed;
+
 };

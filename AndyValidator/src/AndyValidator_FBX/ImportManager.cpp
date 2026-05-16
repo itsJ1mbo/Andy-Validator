@@ -72,7 +72,7 @@ void ImportManager::processNode(FbxNode* node, ModelData& modelData)
         FbxMesh* mesh = node->GetMesh();
         modelData.meshes.push_back(processMesh(mesh));
 
-        /*if (node && node->GetMaterialCount() > 0)
+        if (node && node->GetMaterialCount() > 0)
         {
             FbxSurfaceMaterial* material = node->GetMaterial(0);
             FbxProperty prop = material->FindProperty(FbxSurfaceMaterial::sDiffuse);
@@ -89,7 +89,7 @@ void ImportManager::processNode(FbxNode* node, ModelData& modelData)
                     modelData.meshes.back().textures.push_back(texData);
                 }
             }
-        }*/
+        }
     }
 
     for (int i = 0; i < node->GetChildCount(); ++i)
