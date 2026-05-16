@@ -29,9 +29,17 @@ const char* fragmentShaderSource = "#version 120\n"
 "uniform sampler2D texture1;\n"
 "void main()\n"
 "{\n"
-"    vec4 color0 = texture2D(texture0, TexCoord);\n" //pillamos el color del fragmento para cada textura
+"    float ambientStrength = 1.0;\n"
+"    vec3 lightColor = vec3(1.0, 1.0, 1.0);\n"
+"    vec3 ambient = ambientStrength * lightColor;\n"
+"    vec4 color0 = texture2D(texture0, TexCoord);\n"
 "    vec4 color1 = texture2D(texture1, TexCoord);\n"
-"    gl_FragColor = mix(color0, color1, 0.5);\n" //por ejemplo los mezclamos
+"    vec4 objectColor = color0;\n" //si la segunda textura tiene cosas entonces la blendeamos, si no usamos solo la primera
+"    if (color1.a > 0.0) {\n"
+"        objectColor = mix(color0, color1, 0.5);\n"
+"    }\n"
+"    vec3 result = ambient * objectColor.rgb;\n"
+"    gl_FragColor = vec4(result, objectColor.a);\n"
 "}\n";
 
 
@@ -70,6 +78,9 @@ void Window::free()
     if (!_activeTextures.empty()) {
         glDeleteTextures((GLsizei)_activeTextures.size(), _activeTextures.data());
         _activeTextures.clear();
+    }
+    if (_fallbackTexture != 0) {
+        glDeleteTextures(1, &_fallbackTexture);
     }
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);
@@ -253,6 +264,23 @@ bool Window::initOpenGL()
     glGenBuffers(1, &_vbo);
     glGenBuffers(1, &_ebo);
 
+    //cremaos textura por defecto
+    glGenTextures(1, &_fallbackTexture);
+    glBindTexture(GL_TEXTURE_2D, _fallbackTexture);
+
+    //seteamos wrappeo y filtrado como en las texturas normales
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    //nuestra textura sera un unico pixel gris (no se en blender es gris, digo yo que el gris queda bien)
+    unsigned char greyPixel[] = { 200, 200, 200};
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, greyPixel);
+
+    //unbindeamos la textura
+    glBindTexture(GL_TEXTURE_2D, 0); 
+
     return true;
 }
 
@@ -290,11 +318,7 @@ void Window::renderImgui(const std::vector<ModelResults>& results)
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    //pruebita 
-    //static bool abierto = true;
-    //panelCustomPrueba(&abierto);
-    //ImGui::ShowDemoWindow();
-
+    //creamos el panel de imgui (si, hay que crearlo en cada frame, imgui funciona asi)
     createPanel(results);
 
     // Rendering
@@ -321,19 +345,34 @@ void Window::renderModel()
     //le decimos que use los shaders que hemos cargado antes
     glUseProgram(_shaderProgram);
 
-    for (size_t i = 0; i < _activeTextures.size(); ++i)
+    //si el modelo tiene texturas las ponemos
+    if(!_activeTextures.empty())
     {
-        //bindeamos la textura
-        glActiveTexture(GL_TEXTURE0 + (GLenum)i);
-        glBindTexture(GL_TEXTURE_2D, _activeTextures[i]);
+        for (size_t i = 0; i < _activeTextures.size(); ++i)
+        {
+            //bindeamos la textura
+            glActiveTexture(GL_TEXTURE0 + (GLenum)i);
+            glBindTexture(GL_TEXTURE_2D, _activeTextures[i]);
 
-        //sacamos del shader el parametro de textura correspondiente
-        std::string uniformName = "texture" + std::to_string(i);
-        GLint texLoc = glGetUniformLocation(_shaderProgram, uniformName.c_str());
+            //sacamos del shader el parametro de textura correspondiente
+            std::string uniformName = "texture" + std::to_string(i);
+            GLint texLoc = glGetUniformLocation(_shaderProgram, uniformName.c_str());
 
-        //lo asignamos (comprobando primero si el shader que tenemos tiene ese parametro)
+            //lo asignamos (comprobando primero si el shader que tenemos tiene ese parametro)
+            if (texLoc != -1) {
+                glUniform1i(texLoc, (GLint)i);
+            }
+        }
+    }
+    else
+    {
+        //si no tiene ponemos la textura por defecto
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _fallbackTexture);
+
+        GLint texLoc = glGetUniformLocation(_shaderProgram, "texture0");
         if (texLoc != -1) {
-            glUniform1i(texLoc, (GLint)i);
+            glUniform1i(texLoc, 0);
         }
     }
 
@@ -382,10 +421,7 @@ void Window::setModelToBuffers(const ModelResults& result)
     //reiniciamos la rotacion del modelo al cambiar
     _modelRotationAngle = 0.0f;
 
-    //esto es para calcular la aabb del modelo y hacer que quepa en la ventana (algunos de los de prueba no cabian y otros si)
-    glm::vec3 minBound = result.model.meshes[0].vertexes[0].position;
-    glm::vec3 maxBound = result.model.meshes[0].vertexes[0].position;
-
+    glm::vec3 minBound, maxBound;
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<std::string> texturePaths;
@@ -393,28 +429,36 @@ void Window::setModelToBuffers(const ModelResults& result)
     //enotnces necesitamos esto para evitar solapamientos raros
     unsigned int vertexOffset = 0;
 
-    //pillamos vertices e indices
-    for(const auto& mesh : result.model.meshes)
+    //solo miramos las cosas si el fbx no esta vacio
+    if (!result.model.meshes.empty() && !result.model.meshes[0].vertexes.empty())
     {
-        for(const auto& v : mesh.vertexes)
-        {
-            //aqui ya metemos toda la informacion del vertice: posicion, normales, coordenadas de textura (esto importa para mas tarde)
-            vertices.push_back(v); 
-            minBound = glm::min(minBound, v.position);
-            maxBound = glm::max(maxBound, v.position);
-        }
+        //esto es para calcular la aabb del modelo y hacer que quepa en la ventana (algunos de los de prueba no cabian y otros si)
+        minBound = result.model.meshes[0].vertexes[0].position;
+        maxBound = result.model.meshes[0].vertexes[0].position;
 
-        for(int idx : mesh.indexes)
+        //pillamos vertices e indices
+        for (const auto& mesh : result.model.meshes)
         {
-            indices.push_back(idx + vertexOffset);
-        }
+            for (const auto& v : mesh.vertexes)
+            {
+                //aqui ya metemos toda la informacion del vertice: posicion, normales, coordenadas de textura (esto importa para mas tarde)
+                vertices.push_back(v);
+                minBound = glm::min(minBound, v.position);
+                maxBound = glm::max(maxBound, v.position);
+            }
 
-        for(const auto& t : mesh.textures)
-        {
-            texturePaths.push_back(t.filePath);
-        }
+            for (int idx : mesh.indexes)
+            {
+                indices.push_back(idx + vertexOffset);
+            }
 
-        vertexOffset += (unsigned int)mesh.vertexes.size();
+            for (const auto& t : mesh.textures)
+            {
+                texturePaths.push_back(t.filePath);
+            }
+
+            vertexOffset += (unsigned int)mesh.vertexes.size();
+        }
     }
 
     //calculamos el centro de la esfera
@@ -423,7 +467,6 @@ void Window::setModelToBuffers(const ModelResults& result)
     float maxDim = std::max({ maxBound.x - minBound.x, maxBound.y - minBound.y, maxBound.z - minBound.z });
     //lo normalizamos acorde a la proporcion que ocupa de la ventana el visualizador de modelos (la mitad de la pantalla)
     _modelScaleFactor = 2.0f / maxDim; 
-
 
     //esto es cuanto tiene que leer opengl del buffer, el tamano cambiara dependiendo de lo que se le meta al buffer,
     //pero es NECESARIO actualizarlo a lo que tenga el modelo porque si no no va a dibujar todo

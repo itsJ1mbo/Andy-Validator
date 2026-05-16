@@ -52,6 +52,9 @@ private:
 
     //vector con ids texturas actuales
     std::vector<unsigned int> _activeTextures;
+    //esto fijo que esta feo y no se hace asi pero no se me ocurre otra forma ahora mismo, pero es basicamente una textura por defecto
+    //por si un modelo no tiene texturas que no se vea negro
+    unsigned int _fallbackTexture = 0;
 
     //cosas de la rotacion del modelo
     float _modelRotationAngle;
@@ -61,7 +64,6 @@ private:
     glm::vec3 _modelCenter;
     float _modelScaleFactor;
 
-
+    //para los botones de desplegar y colapsar todas las validaciones
     bool _collapsed;
-
 };
