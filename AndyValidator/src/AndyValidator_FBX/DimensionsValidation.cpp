@@ -1,5 +1,5 @@
 #include "AndyValidator_FBX/DimensionsValidation.h"
-#include "AndyValidator_FBX/stb_image.h"
+#include "stb_image.h"
 #include <iostream>
 
 void DimensionsValidation::validate(const FbxScene* fbx, ModelResults& results)
@@ -18,33 +18,40 @@ void DimensionsValidation::validate(const FbxScene* fbx, ModelResults& results)
 
 bool DimensionsValidation::isTextureValid(FbxSurfaceMaterial* material)
 {
-
     // This only gets the material of type sDiffuse, you probably need to traverse all Standard Material Property by its name to get all possible textures.
     FbxProperty prop = material->FindProperty(FbxSurfaceMaterial::sDiffuse);
 
-    // Check if it's layeredtextures
-    int layeredTextureCount = prop.GetSrcObjectCount<FbxLayeredTexture>();
+    // cuenta el numero de texturas que tiene
+    int textureCount = prop.GetSrcObjectCount<FbxTexture>();
+    //std::cout << "hola " << layeredTextureCount << "\n";
 
-    if (layeredTextureCount > 0)
+    if (textureCount > 0)
     {
-        for (int j = 0; j < layeredTextureCount; j++)
+        for (int j = 0; j < textureCount; j++)
         {
-            FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(prop.GetSrcObject<FbxLayeredTexture>(j));
-            int lcount = layered_texture->GetSrcObjectCount<FbxTexture>();
 
-            for (int k = 0; k < lcount; k++)
-            {
-                FbxTexture* texture = FbxCast<FbxTexture>(layered_texture->GetSrcObject<FbxFileTexture>(k));
+            std::cout << "hola \n";
 
-                // Then, you can get all the properties of the texture, include its name
-                const char* textureName = texture->GetName();
+            FbxTexture* texture = FbxCast<FbxTexture>(material->GetSrcObject<FbxFileTexture>(j));
 
-                std::cout << textureName << std::endl;
-            }
+
+            //FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(prop.GetSrcObject<FbxLayeredTexture>(j));
+            //int lcount = layered_texture->GetSrcObjectCount<FbxTexture>();
+
+            //for (int k = 0; k < lcount; k++)
+            //{
+            //    FbxTexture* texture = FbxCast<FbxTexture>(layered_texture->GetSrcObject<FbxFileTexture>(k));
+
+            //    // Then, you can get all the properties of the texture, include its name
+            //    const char* textureName = texture->GetName();
+
+            //    std::cout << textureName << std::endl;
+            //}
         }
+    }
          
         return false;
-    }
+    
 
 }
 
@@ -57,6 +64,9 @@ bool DimensionsValidation::validDimensions(FbxNode* node)
     {
         FbxMesh* mesh = node->GetMesh();
 
+        //FbxLayerElementArrayTemplate<FbxVector2>** a;
+
+        //mesh->GetTextureUV(a, FbxLayerElement::eTextureDiffuse);
 
         int materialCount = node->GetSrcObjectCount<FbxSurfaceMaterial>();
 
@@ -68,7 +78,7 @@ bool DimensionsValidation::validDimensions(FbxNode* node)
             // si el material existe
             if (material != NULL) {
 
-
+                return isTextureValid(material);
 
             }
 
