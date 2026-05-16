@@ -30,41 +30,28 @@ bool DimensionsValidation::isTextureValid(FbxSurfaceMaterial* material)
     {
         for (int j = 0; j < textureCount; j++)
         {
-            // saca la textura y su nombre
+            // saca la textura 
             FbxTexture* texture = FbxCast<FbxTexture>(prop.GetSrcObject<FbxFileTexture>());
-            const char* textureName = texture->GetName();
 
+            // saca el fileTexture para conseguir el file
             FbxFileTexture* file = FbxCast<FbxFileTexture>(texture);
             if (file != nullptr) {
+
+                // recoge el path
                 FbxString path = file->GetFileName();
 
-                std::cout << "hola " << path << "\n";
-            
+                // recoge la info de la imagen
                 int x, y, comp;
-
                 stbi_info(path, &x, &y, &comp);
-                std::cout << "size " << x << " x " << y << " whatever this means " << comp << "\n";
 
+                // si ambas dimensiones son potencia de 2 devuelve true
                 return isPowerOfTwo(x) && isPowerOfTwo(y);
             }
-
-
-            //FbxLayeredTexture* layered_texture = FbxCast<FbxLayeredTexture>(prop.GetSrcObject<FbxLayeredTexture>(j));
-            //int lcount = layered_texture->GetSrcObjectCount<FbxTexture>();
-
-            //for (int k = 0; k < lcount; k++)
-            //{
-            //    FbxTexture* texture = FbxCast<FbxTexture>(layered_texture->GetSrcObject<FbxFileTexture>(k));
-
-            //    // Then, you can get all the properties of the texture, include its name
-            //    const char* textureName = texture->GetName();
-
-            //    std::cout << textureName << std::endl;
-            //}
         }
     }
-         
-        return false;
+    
+    // si no hay textura esta bien
+    return true;
     
 
 }
@@ -89,29 +76,24 @@ bool DimensionsValidation::validDimensions(FbxNode* node)
     // Comprobamos que sea malla
     if (attribute && attribute->GetAttributeType() == FbxNodeAttribute::eMesh)
     {
-        FbxMesh* mesh = node->GetMesh();
-
-        //FbxLayerElementArrayTemplate<FbxVector2>** a;
-
-        //mesh->GetTextureUV(a, FbxLayerElement::eTextureDiffuse);
-
+        // recoge el numero de materiales por si hay varios
         int materialCount = node->GetSrcObjectCount<FbxSurfaceMaterial>();
 
         // recorre los materiales
         for (int index = 0; index < materialCount; index++) {
 
+            // recoge el material
             FbxSurfaceMaterial* material = (FbxSurfaceMaterial*)node->GetSrcObject<FbxSurfaceMaterial>(index);
 
             // si el material existe
             if (material != NULL) {
 
-                return isTextureValid(material);
+                // si no es valida corta y devuelve false, si es valida sigue
+                if(!isTextureValid(material))
+                    return false;
 
             }
-
         }
-
-
     }
 
     // Recursividad con sus hijos
