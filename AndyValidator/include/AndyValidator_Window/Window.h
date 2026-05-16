@@ -47,8 +47,13 @@ private:
     //buffers y cosas de opengl
     unsigned int _vao, _vbo, _ebo, _shaderProgram;
 
+    //cosas de la rotacion del modelo
     float _modelRotationAngle;
     float _modelRotationSpeed;
+
+    //cosas para que quepa en la ventana
+    glm::vec3 _modelCenter;
+    float _modelScaleFactor;
 
     //indica cuanto tiene que leer del buffer el gldrawarrays
     int _bufferCount;

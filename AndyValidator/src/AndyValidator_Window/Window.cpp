@@ -307,9 +307,16 @@ void Window::renderModel()
     glm::mat4 projection = glm::perspective(glm::radians(fov), (float)_width / (float)_height, nearPlane, farPlane);
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
 
-    glm::mat4 model = glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(1.25, 0, 0)), _modelRotationAngle, glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 model = glm::mat4(1.0f);
+    //lo movemos a la derecha para que no lo tape el panel de imgui (si es un numero magico muy raro puesto a base de prueba y error)
+    model = glm::translate(model, glm::vec3(1.35f, 0.0f, 0.0f));
+    //lo rotamos porque queda muy chulo
+    model = glm::rotate(model, _modelRotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
     _modelRotationAngle += _modelRotationSpeed * ImGui::GetIO().DeltaTime;
+    //lo escalamos para que quepa en la ventana
+    model = glm::scale(model, glm::vec3(_modelScaleFactor));
 
+    //multiplicamos todas las cosas y magia
     glm::mat4 mvp = projection * view * model;
 
     //mandar cosas a gpu
@@ -325,7 +332,12 @@ void Window::renderModel()
 }
 void Window::setModelToBuffers(const ModelResults& result)
 {
+    //reiniciamos la rotacion del modelo al cambiar
     _modelRotationAngle = 0.0f;
+
+    //esto es para calcular la aabb del modelo y hacer que quepa en la ventana (algunos de los de prueba no cabian y otros si)
+    glm::vec3 minBound = result.model.meshes[0].vertexes[0].position;
+    glm::vec3 maxBound = result.model.meshes[0].vertexes[0].position;
 
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -339,6 +351,8 @@ void Window::setModelToBuffers(const ModelResults& result)
         for(const auto& v : mesh.vertexes)
         {
             vertices.push_back(v);
+            minBound = glm::min(minBound, v.position);
+            maxBound = glm::max(maxBound, v.position);
         }
 
         for(int idx : mesh.indexes)
@@ -348,6 +362,14 @@ void Window::setModelToBuffers(const ModelResults& result)
 
         vertexOffset += (unsigned int)mesh.vertexes.size();
     }
+
+    //calculamos el centro de la esfera
+    _modelCenter = (minBound + maxBound) * 0.5f;
+    //calculamos el lado mas largo para escalar el  modelo igual en todos los ejes
+    float maxDim = std::max({ maxBound.x - minBound.x, maxBound.y - minBound.y, maxBound.z - minBound.z });
+    //lo normalizamos acorde a la proporcion que ocupa de la ventana el visualizador de modelos (la mitad de la pantalla)
+    _modelScaleFactor = 2.0f / maxDim; 
+
 
     //esto es cuanto tiene que leer opengl del buffer, el tamano cambiara dependiendo de lo que se le meta al buffer,
     //pero es NECESARIO actualizarlo a lo que tenga el modelo porque si no no va a dibujar todo
