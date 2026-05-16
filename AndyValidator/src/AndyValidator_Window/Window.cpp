@@ -243,9 +243,10 @@ bool Window::initOpenGL()
     //depth test para que no se solapen mal
     glEnable(GL_DEPTH_TEST);
 
-    //le metemos el culling de caras traseras para las normales
+    //le metemos el culling para las normales 
     glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    //decidimos no ocultar ninguno de los dos lados de la cara para poder visualizar bien si hay alguna normal flippeada
+    glCullFace(GL_NONE);
     
     //importante generar los buffers que usara opengl
     glGenVertexArrays(1, &_vao);
