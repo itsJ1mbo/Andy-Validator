@@ -47,6 +47,9 @@ private:
     //buffers y cosas de opengl
     unsigned int _vao, _vbo, _ebo, _shaderProgram;
 
+    float _modelRotationAngle;
+    float _modelRotationSpeed;
+
     //indica cuanto tiene que leer del buffer el gldrawarrays
     int _bufferCount;
 

@@ -31,7 +31,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0), _vao(0), _vbo(0), _ebo(0), _shaderProgram(0)
+Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0), _vao(0), _vbo(0), _ebo(0), _shaderProgram(0), _modelRotationAngle(0), _modelRotationSpeed(1.0)
 {
 
 }
@@ -146,6 +146,7 @@ bool Window::initGlfw()
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     //Crear ventana
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     _glfwWindow = glfwCreateWindow(_width, _height, "AndyValidator", NULL, NULL);
 
     if(_glfwWindow == NULL)
@@ -306,8 +307,8 @@ void Window::renderModel()
     glm::mat4 projection = glm::perspective(glm::radians(fov), (float)_width / (float)_height, nearPlane, farPlane);
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
 
-    //para cambiarle la escala a la que se ve todo cambiar el float de distancia
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(1.25, 0, 0));
+    glm::mat4 model = glm::rotate(glm::translate(glm::mat4(1.0), glm::vec3(1.25, 0, 0)), _modelRotationAngle, glm::vec3(0.0, 1.0, 0.0));
+    _modelRotationAngle += _modelRotationSpeed * ImGui::GetIO().DeltaTime;
 
     glm::mat4 mvp = projection * view * model;
 
@@ -324,6 +325,8 @@ void Window::renderModel()
 }
 void Window::setModelToBuffers(const ModelResults& result)
 {
+    _modelRotationAngle = 0.0f;
+
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     //esto es porque un fbx puede tener varias meshes y los indices empiezan para cada una en el 0,
@@ -415,6 +418,11 @@ void Window::createPanel(const std::vector<ModelResults>& results)
             _collapsed = true;
             buttonPressed = true;
         }
+
+        ImGui::SameLine();
+
+        ImGui::SetNextItemWidth(_width/7.0);
+        ImGui::SliderFloat(" Velocidad de rotacion", &_modelRotationSpeed, 0.0, 10.0);
 
         for(int i = 0; i < results.size(); i++) {
             createResultDropdown(results[i], i, buttonPressed);
