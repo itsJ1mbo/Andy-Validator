@@ -20,7 +20,8 @@ enum ValidationType {
     TexelDensityTest,
     LODTest,
     OverlappingUVTest,
-    CollidersTest
+    CollidersTest,
+    DimensionsTest
 };
 
 enum class NamingNomenclature

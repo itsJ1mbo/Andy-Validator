@@ -49,6 +49,9 @@
     <ClCompile Include="..\..\src\AndyValidator_FBX\CollidersValidation.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\DimensionsValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AndyValidator_FBX\CleanSceneValidation.h">
@@ -98,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\OverlappingUVValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\CollidersValidation.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\DimensionsValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\AndyValidator_FBX\CleanSceneValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\CollidersValidation.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\DimensionsValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\ImportManager.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\LODValidation.h" />
@@ -33,6 +34,7 @@
     <ClCompile Include="..\..\src\AndyValidator_Core\Prueba1Validation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\CleanSceneValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\CollidersValidation.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_FBX\DimensionsValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\ImportManager.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\LODValidation.cpp" />
