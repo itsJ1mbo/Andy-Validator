@@ -111,6 +111,10 @@ void Loader::readConfig(const std::string& path)
         {
             _cfg.texelDensityTolerance = std::stod(value);
         }
+        else if (key == "UV_PADDING_MARGIN") 
+        {
+            _cfg.uvPaddingMargin = std::stod(value);
+        }
     }
 
     file.close();
@@ -132,6 +136,7 @@ void Loader::createConfig()
     file << std::format("UNREAL_ENGINE = {}\n", _cfg.unreal ? "true" : "false");
     file << std::format("NAMING_CONVENTION = {}\n", magic_enum::enum_name(_cfg.naming));
     file << std::format("TEXEL_DENSITY_TOLERANCE = {:.2f}\n", _cfg.texelDensityTolerance);
+    file << std::format("UV_PADDING_MARGIN = {:.3f}\n", _cfg.uvPaddingMargin);
 
     file.close();
 }
