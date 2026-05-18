@@ -30,7 +30,14 @@ Software de validacion de modelos 3D de formato FBX para videojuegos
    
 ## Arquitectura
 ### Window
-Proyecto que gestiona y crea la ventana. Proporciona las herramientas para crear elementos de la UI
+Proyecto que crea y gestiona todo lo relacionado con la ventana y está únicamente formado por la clase window.
+Esta clase utiliza GLFW para la ventana y el input, OpenGL para el renderizado de los modelos y DearImGui para los paneles y botones. Además, también utiliza otras librerias auxiliares como GLM para las matemáticas, stb_image para cargar las texturas y magic_enum para convertir los enums a strings.
+
+Después de la inicialización, cada frame la ventana recibe un vector con los resultados de las validaciones que hayan sido realizadas y hace lo siguiente: 
+  - Procesa los inputs que haya usado el usuario, aunque en nuestro caso solo se trata de cerrar la ventana, pero podría expandirse a controles de la cámara del visualizador por ejemplo.
+  - Renderiza el modelo que se haya almacenado en los buffers de OpenGL al hacer click en uno de los botones de mostrar modelo de la interfaz.
+  - Renderiza toda la interfaz de la aplicación con los resultados de las validaciones ya realizadas, lo que al usar DearImGui implica crear todos los elementos de la interfaz cada frame. Todo el input de la interfaz es gestionado por DearImgui, por lo que el trabajo que tenemos que hacer nosotros con respecto a eso es mínimo, solo teniendo que cambiar el valor de alguna variable o llamando a una función en particular (como la de cargar un modelo en el buffer de OpenGL); 
+
 ### FBX
 Proyecto que realiza la validacion a traves del sdk de autodesk. El punto de entrada inicializa la libreria y gestiona el hilo secundario que corre la importacion y validaciones de cada modelo.
 #### Validaciones
@@ -138,8 +145,16 @@ struct Config
 ```
 
 ## Librerias
-pum (y glm)
 
+### Ventana
+- [OpenGL](https://www.opengl.org/)
+- [GLFW](https://github.com/glfw/glfw) - Licencia zlib
+- [DearImGui](https://github.com/ocornut/imgui) - Licencia MIT
+- [MagicEnum](https://github.com/Neargye/magic_enum) - Licencia MIT
+- [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h) - Licencia MIT
+
+
+Esto está desactualizado hay como ochenta más
 ![Cuantas librerias hay en el proyecto?](dependencies.png)
 
 ## Terceros
