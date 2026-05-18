@@ -66,4 +66,5 @@ private:
 
     //para los botones de desplegar y colapsar todas las validaciones
     bool _collapsed;
+    bool _rotX, _rotY, _rotZ;
 };

@@ -61,7 +61,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0), _vao(0), _vbo(0), _ebo(0), _shaderProgram(0), _modelRotationAngle(0), _modelRotationSpeed(1.0)
+Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0), _vao(0), _vbo(0), _ebo(0), _shaderProgram(0), _modelRotationAngle(0), _modelRotationSpeed(1.0), _rotX(false), _rotY(true), _rotZ(false)
 {
 
 }
@@ -230,11 +230,11 @@ bool Window::initOpenGL()
         return false;
     }
 
+    //lo mismo pero con el de fragmentos
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
 
-    //lo mismo pero con el de fragmentos
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
     if(!success) {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
@@ -311,9 +311,25 @@ bool Window::initImgui() const
     io.Fonts->AddFontDefault();
     io.FontGlobalScale = 1.0;
 
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();    
+    //cambiar el estilo
+    ImGuiStyle& style = ImGui::GetStyle();
+    //fondo de la ventana
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
+    //desplegables
+    style.Colors[ImGuiCol_Header] = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+    style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.0f);
+    //botones
+    style.Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+    style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.0f);
+    //sliders y checkboxes
+    style.Colors[ImGuiCol_CheckMark] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    style.Colors[ImGuiCol_FrameBg] = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
+    style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.0f);
+    style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.4f, 0.4f, 0.4f, 1.0f);
+    style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.45f, 0.45f, 0.45f, 1.0f);
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(_glfwWindow, true);
@@ -403,7 +419,8 @@ void Window::renderModel()
     // lo movemos a la derecha para que no lo tape el panel de imgui
     model = glm::translate(model, glm::vec3(1.35f, 0.0f, 0.0f));
     // lo rotamos porque queda muy chulo
-    model = glm::rotate(model, _modelRotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+    if(_rotX || _rotY || _rotZ)
+        model = glm::rotate(model, _modelRotationAngle, glm::vec3((float)_rotX, (float)_rotY, (float)_rotZ));
     _modelRotationAngle += _modelRotationSpeed * ImGui::GetIO().DeltaTime;
     // lo escalamos para que quepa en la ventana
     model = glm::scale(model, glm::vec3(_modelScaleFactor));
@@ -597,7 +614,7 @@ void Window::createPanel(const std::vector<ModelResults>& results)
     //el booleano controla si la ventana está abierta o no, con ponerlo a false se cierra sola la ventana y tal, 
     //si quisieramos tener control sobre esto almacenariamos el booleano en algun lado, pero nunca la vamos a querer cerrar
     bool open = true;
-    if(ImGui::Begin("Desplegables", &open, flags))
+    if(ImGui::Begin("Panel", &open, flags))
     {
         //muy feo pero necesario para los botones de colapsar/desplegar, ya que si no no podemos desplegarlos
         bool buttonPressed = false;
@@ -616,14 +633,29 @@ void Window::createPanel(const std::vector<ModelResults>& results)
             buttonPressed = true;
         }
 
+        //checkboxes para los ejes en los que rota el modelo
+        ImGui::Text("Ejes de rotacion");
+        ImGui::SameLine();
+        ImGui::Checkbox("x", &_rotX);
+        ImGui::SameLine();
+        ImGui::Checkbox("y", &_rotY);
+        ImGui::SameLine();
+        ImGui::Checkbox("z", &_rotZ);
+
         ImGui::SameLine();
 
+        //slider de la velocidad de rotacion
         ImGui::SetNextItemWidth(_width/7.0);
         ImGui::SliderFloat(" Velocidad de rotacion", &_modelRotationSpeed, 0.0, 10.0);
 
-        for(int i = 0; i < results.size(); i++) {
-            createResultDropdown(results[i], i, buttonPressed);
+        if(ImGui::BeginChild("Desplegables", ImVec2(0.0, 0.0), true))
+        {
+            for (int i = 0; i < results.size(); i++) {
+                createResultDropdown(results[i], i, buttonPressed);
+            }
         }
+        ImGui::EndChild();
+        
     }
     //SIEMPRE hay que llamar a un end por cada begin
     ImGui::End();
@@ -634,22 +666,22 @@ void Window::createResultDropdown(const ModelResults& result, int index, bool bu
     //podemos pasarle la direccion de memoria del resultado a imgui como id para que cada dropdown sea independiente de los demas
     ImGui::PushID(&result);
 
-    if(buttonPressed)
+    //si el modelo ha pasado o no todos los tests
+    if (!result.index.has_value())
+        ImGui::TextColored(ImVec4(1, 1, 1, 1), "(Pendiente)");
+    else
+        ImGui::TextColored(result.allTestsPassed ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), result.allTestsPassed ? "(Aprobado)" : "(Suspenso)");
+
+    ImGui::SameLine();
+    
+    if (buttonPressed)
         ImGui::SetNextItemOpen(!_collapsed);
     //quizas un poco feo tener esto asi, pero imgui solo dibuja los contenidos si el header esta abierto,
     //y como queremos tener un hover por si el nombre del archivo es demasiado largo, tenemos que hacerlo asi
     //(si estuviera dentro de la condicion de abierto solo se ejecutaria cuando el header estuviera abierto)
     bool abierto = ImGui::CollapsingHeader(_modelNames[index].c_str());
-
     if(ImGui::IsItemHovered())
         ImGui::SetTooltip(_modelNames[index].c_str());
-
-    ImGui::SameLine();
-    if(!result.index.has_value())
-        ImGui::TextColored(ImVec4(1, 1, 1, 1), "(Pendiente)");
-    else
-        ImGui::TextColored(result.allTestsPassed ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), result.allTestsPassed ? "(Aprobado)" : "(Suspenso)");
-
 
     if(abierto)
     {
