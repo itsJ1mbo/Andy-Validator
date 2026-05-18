@@ -13,7 +13,7 @@ void PaddingValidation::validate(const FbxScene* fbx, ModelResults& results)
 
     ValidationResult res;
     res.type = UVPaddingTest;
-    res.description = "Comprueba si las islas UV tienen suficiente margen entre ellas.";
+    res.description = "Comprueba si las islas UV tienen suficiente margen entre ellas";
     res.passed = success;
 
     results.validations.emplace_back(res);
