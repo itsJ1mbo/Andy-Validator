@@ -21,7 +21,8 @@ enum ValidationType {
     LODTest,
     OverlappingUVTest,
     CollidersTest,
-    DimensionsTest
+    DimensionsTest,
+    UVPaddingTest
 };
 
 enum class NamingNomenclature
@@ -64,6 +65,7 @@ struct Config
     bool unreal = false;
     NamingNomenclature naming = NamingNomenclature::UpperCamelCase;
     double texelDensityTolerance = 1.30;
+    double uvPaddingMargin = 0.01;
 };
 
 struct ValidationResult

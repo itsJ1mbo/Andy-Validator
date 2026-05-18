@@ -14,6 +14,7 @@
 #include "AndyValidator_FBX/OverlappingUVValidation.h"
 #include "AndyValidator_FBX/CollidersValidation.h"
 #include "AndyValidator_FBX/DimensionsValidation.h"
+#include "AndyValidator_FBX/PaddingValidation.h"
 
 ValidatorManager::ValidatorManager()
 {
@@ -31,6 +32,7 @@ ValidatorManager::ValidatorManager()
     _validations.push_back(std::make_unique<OverlappingUVValidation>());
     _validations.push_back(std::make_unique<CollidersValidation>());
     _validations.push_back(std::make_unique<DimensionsValidation>());
+    _validations.push_back(std::make_unique<PaddingValidation>());
 }
 
 ValidatorManager::~ValidatorManager() = default;

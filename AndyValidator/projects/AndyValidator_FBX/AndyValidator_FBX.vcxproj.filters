@@ -50,6 +50,7 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\AndyValidator_FBX\ExistingSceneValidation.cpp">
+    <ClCompile Include="..\..\src\AndyValidator_FBX\PaddingValidation.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
@@ -106,6 +107,7 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\ExistingSceneValidation.h">
+    <ClInclude Include="..\..\include\AndyValidator_FBX\PaddingValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
