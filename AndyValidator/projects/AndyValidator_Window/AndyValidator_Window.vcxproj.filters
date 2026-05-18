@@ -50,5 +50,8 @@
     <ClInclude Include="..\..\include\AndyValidator_Window\Window.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_Window\shaders.h">
+      <Filter>Archivos de recursos</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

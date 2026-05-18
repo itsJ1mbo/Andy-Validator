@@ -110,6 +110,7 @@
     <ClCompile Include="..\..\src\AndyValidator_Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\AndyValidator_Window\shaders.h" />
     <ClInclude Include="..\..\include\AndyValidator_Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

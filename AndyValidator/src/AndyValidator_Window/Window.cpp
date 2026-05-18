@@ -8,60 +8,17 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "stb_image.h"
+#include "AndyValidator_Window/shaders.h"
 #include <iostream>
 #include <filesystem>
 #include <utility>
-
-const char* vertexShaderSource = "#version 120\n"
-"attribute vec3 aPos;\n"
-"attribute vec2 aTexCoord;\n"
-"attribute vec3 aNormal;\n"
-"varying vec2 TexCoord;\n"
-"varying vec3 Normal;\n"
-"uniform mat4 matrix;\n"
-"uniform mat4 modelMat;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = matrix * (vec4(aPos, 1.0));\n"
-"    TexCoord = aTexCoord;\n"
-"    \n"
-"    Normal = mat3(modelMat) * aNormal;\n" //basicamente trasladamos las normales lo mismo que transformamos todo el modelo para tener iluminacion realista en vez de quedarse "pegada"
-"}\n";
-
-const char* fragmentShaderSource = "#version 120\n"
-"varying vec2 TexCoord;\n"
-"varying vec3 Normal;\n"
-"uniform sampler2D texture0;\n"
-"uniform sampler2D texture1;\n"
-"void main()\n"
-"{\n"
-"    float ambientStrength = 0.2;\n" //calculamos la luz de ambiente
-"    vec3 lightColor = vec3(1.0, 1.0, 1.0);\n"
-"    vec3 ambient = ambientStrength * lightColor;\n"
-"    \n"
-"    vec3 norm = normalize(Normal);\n" //calculamos luz direccional
-"    vec3 lightDir = normalize(vec3(0.5, 1.0, 0.3));\n"
-"    float diff = max(dot(norm, lightDir), 0.0);\n"
-"    vec3 diffuse = diff * lightColor;\n"
-"    \n"
-"    vec4 color0 = texture2D(texture0, TexCoord);\n" //las texturas y eso
-"    vec4 color1 = texture2D(texture1, TexCoord);\n"
-"    vec4 objectColor = color0;\n"
-"    if (color1.a > 0.0) {\n"
-"        objectColor = mix(color0, color1, 0.5);\n"
-"    }\n"
-"    vec3 lighting = (ambient + diffuse);\n" //juntamos todo, bendito sea marco antonio y las clases de ilm por hacerme entender como funciona la luz
-"    vec3 result = lighting * objectColor.rgb;\n"
-"    gl_FragColor = vec4(result, objectColor.a);\n"
-"}\n";
-
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0), _vao(0), _vbo(0), _ebo(0), _shaderProgram(0), _modelRotationAngle(0), _modelRotationSpeed(1.0), _rotX(false), _rotY(true), _rotZ(false)
+Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0), _vao(0), _vbo(0), _ebo(0), _defaultShaderProgram(0), _visualizeNormalsShaderProgram(0), _modelRotationAngle(0), _modelRotationSpeed(1.0), _rotX(false), _rotY(true), _rotZ(false), _visualizeNormals(false)
 {
 
 }
@@ -98,7 +55,7 @@ void Window::free()
     glDeleteVertexArrays(1, &_vao);
     glDeleteBuffers(1, &_vbo);
     glDeleteBuffers(1, &_ebo);
-    glDeleteProgram(_shaderProgram);
+    glDeleteProgram(_defaultShaderProgram);
     glfwDestroyWindow(_glfwWindow);
 }
 
@@ -138,6 +95,7 @@ void Window::updateWindow(const std::vector<ModelResults>& results)
     //eventos ventana
     glfwPollEvents();
 
+    //procesa input
     processInput();
 
     //render
@@ -154,6 +112,7 @@ void Window::setModelNames(const std::vector<std::string>& paths)
 
 void Window::processInput() const
 {
+    //ahora mismo solo tenemos que se pueda cerrar la aplicacion pulsando el esc, pero se podria ampliar metiendo controles de camara por ejemplo
     if(glfwGetKey(_glfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(_glfwWindow, true);
 }
@@ -189,7 +148,7 @@ bool Window::initGlfw()
     if(_glfwWindow == NULL)
     {
 #if _DEBUG
-        std::cout << "La ventana se ha cagado encima\n";
+        std::cout << "Fallo al inicializar la ventana\n";
 #endif
         glfwTerminate();
         return false;
@@ -199,7 +158,7 @@ bool Window::initGlfw()
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
 #if _DEBUG
-        std::cout << "Failed to initialize GLAD\n";
+        std::cout << "Fallo al inicializar GLAD\n";
 #endif
         return false;
     }
@@ -212,64 +171,51 @@ bool Window::initGlfw()
 
 bool Window::initOpenGL()
 {
-    //pillamos los shaders
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-    //los compilamos
     int success;
     char infoLog[512];
-    //primero el de vertices
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if(!success) {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-#if _DEBUG
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-#endif
-        return false;
-    }
 
-    //lo mismo pero con el de fragmentos
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if(!success) {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-#if _DEBUG
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-#endif
-        return false;
-    }
-
-    //los linkamos al shader program
-    _shaderProgram = glCreateProgram();
-    glAttachShader(_shaderProgram, vertexShader);
-    glAttachShader(_shaderProgram, fragmentShader);
-    glLinkProgram(_shaderProgram);
+    //shaders default
+    //------------------
+    _defaultShaderProgram = glCreateProgram();
+    compileAndAttachShader(_defaultShaderProgram, vertexShaderSource, GL_VERTEX_SHADER);
+    compileAndAttachShader(_defaultShaderProgram, fragmentShaderSource, GL_FRAGMENT_SHADER);
+    glLinkProgram(_defaultShaderProgram);
 
     //comprobamos que estan linkados
-    glGetProgramiv(_shaderProgram, GL_LINK_STATUS, &success);
+    glGetProgramiv(_defaultShaderProgram, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(_shaderProgram, 512, NULL, infoLog);
+        glGetProgramInfoLog(_defaultShaderProgram, 512, NULL, infoLog);
 #if _DEBUG
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        std::cout << "ERROR::DEFAULT::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 #endif
         return false;
     }
+    //------------------
 
-    //los borramos porque ya estan en el shader program
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    //shaders de visualizacion de normales
+    //------------------
+    _visualizeNormalsShaderProgram = glCreateProgram();
+    compileAndAttachShader(_visualizeNormalsShaderProgram, visualizeNormalsVertexShaderSource, GL_VERTEX_SHADER);
+    compileAndAttachShader(_visualizeNormalsShaderProgram, visualizeNormalsFragmentShaderSource, GL_FRAGMENT_SHADER);
+    glLinkProgram(_visualizeNormalsShaderProgram);
 
-    //depth test para que no se solapen mal
+    //comprobamos que estan linkados
+    glGetProgramiv(_visualizeNormalsShaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(_visualizeNormalsShaderProgram, 512, NULL, infoLog);
+#if _DEBUG
+        std::cout << "ERROR::NORMALS::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+#endif
+        return false;
+    }
+    //------------------
+
+
+    //depth test para que no se solapen mal los modelos
     glEnable(GL_DEPTH_TEST);
 
     //le metemos el culling para las normales 
     glEnable(GL_CULL_FACE);
-    //decidimos no ocultar ninguno de los dos lados de la cara para poder visualizar bien si hay alguna normal flippeada
     glCullFace(GL_BACK);
     
     //importante generar los buffers que usara opengl
@@ -291,7 +237,7 @@ bool Window::initOpenGL()
     unsigned char greyPixel[] = { 200, 200, 200};
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, greyPixel);
 
-    //unbindeamos la textura
+    //unbindeamos la textura para no romper otras inicializaciones
     glBindTexture(GL_TEXTURE_2D, 0); 
 
     return true;
@@ -304,14 +250,15 @@ bool Window::initImgui() const
     if (ImGui::CreateContext() == nullptr)
         return false;
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.IniFilename = nullptr; //porque nos la pela la persistencia de la ventana
 
+    //como nos da igual que se conserven los ajustes de la ventana entre ejecuciones, hacemos que no se genere ningun imgui.ini
+    io.IniFilename = nullptr; 
+
+    //fuente de la ventana de imgui, usamos la default para no tener que incluir un .ttf con el .exe
     io.Fonts->AddFontDefault();
     io.FontGlobalScale = 1.0;
 
-    //cambiar el estilo
+    //cambiar el estilo de la ventana a lo que queramos
     ImGuiStyle& style = ImGui::GetStyle();
     //fondo de la ventana
     style.Colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f);
@@ -339,6 +286,36 @@ bool Window::initImgui() const
     return true;
 }
 
+bool Window::compileAndAttachShader(unsigned int shaderProgram, const char* shaderSource, unsigned int shaderType)
+{
+    int success;
+    char infoLog[512];
+
+    //creamos el shader
+    unsigned int shader = glCreateShader(shaderType);
+    glShaderSource(shader, 1, &shaderSource, NULL);
+    glCompileShader(shader);
+
+    //compilamos
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(shader, 512, NULL, infoLog);
+#if _DEBUG
+        std::string aux = "";
+        shaderType == GL_VERTEX_SHADER ? aux = "VERTEX" : "FRAGMENT";
+        std::cout << "ERROR::SHADER::" << aux << "::COMPILATION_FAILED\n" << infoLog << std::endl;
+#endif
+        return false;
+    }
+
+    //attacheamos al shader program
+    glAttachShader(shaderProgram, shader);
+    //lo borramos porque ya esta attacheado
+    glDeleteShader(shader);
+
+    return true;
+}
+
 void Window::renderImgui(const std::vector<ModelResults>& results)
 {
 
@@ -356,13 +333,7 @@ void Window::renderImgui(const std::vector<ModelResults>& results)
     glfwGetFramebufferSize(_glfwWindow, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
 
-    // If you are using this code with non-legacy OpenGL header/contexts (which you should not, prefer using imgui_impl_opengl3.cpp!!),
-    // you may need to backup/reset/restore other state, e.g. for current shader using the commented lines below.
-    //GLint last_program;
-    //glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
-    //glUseProgram(0);
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
-    //glUseProgram(last_program);
 }
 
 void Window::renderModel()
@@ -372,7 +343,10 @@ void Window::renderModel()
         return;
 
     //le decimos que use los shaders que hemos cargado antes
-    glUseProgram(_shaderProgram);
+    if(_visualizeNormals)
+        glUseProgram(_visualizeNormalsShaderProgram);
+    else
+        glUseProgram(_defaultShaderProgram);
 
     //si el modelo tiene texturas las ponemos
     if(!_activeTextures.empty())
@@ -385,7 +359,7 @@ void Window::renderModel()
 
             //sacamos del shader el parametro de textura correspondiente
             std::string uniformName = "texture" + std::to_string(i);
-            GLint texLoc = glGetUniformLocation(_shaderProgram, uniformName.c_str());
+            GLint texLoc = glGetUniformLocation(_defaultShaderProgram, uniformName.c_str());
 
             //lo asignamos (comprobando primero si el shader que tenemos tiene ese parametro)
             if (texLoc != -1) {
@@ -399,22 +373,24 @@ void Window::renderModel()
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _fallbackTexture);
 
-        GLint texLoc = glGetUniformLocation(_shaderProgram, "texture0");
+        GLint texLoc = glGetUniformLocation(_defaultShaderProgram, "texture0");
         if (texLoc != -1) {
             glUniform1i(texLoc, 0);
         }
     }
 
     //pillamos del shader el parametro
-    GLint transformLoc = glGetUniformLocation(_shaderProgram, "matrix");
+    GLint transformLoc = glGetUniformLocation(_defaultShaderProgram, "matrix");
 
     //gracias glm por ahorrarme tener que hacer estas cosas a mano
-    float fov = 45.0;
-    float nearPlane = 0.1;
-    float farPlane = 1000;
+    //camara 
+    float fov = 45.0f;
+    float nearPlane = 0.1f;
+    float farPlane = 1000.0f;
     glm::mat4 projection = glm::perspective(glm::radians(fov), (float)_width / (float)_height, nearPlane, farPlane);
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
 
+    //modelo
     glm::mat4 model = glm::mat4(1.0f);
     // lo movemos a la derecha para que no lo tape el panel de imgui
     model = glm::translate(model, glm::vec3(1.35f, 0.0f, 0.0f));
@@ -425,8 +401,8 @@ void Window::renderModel()
     // lo escalamos para que quepa en la ventana
     model = glm::scale(model, glm::vec3(_modelScaleFactor));
 
-    // FIX: Send the pure model matrix to the shader before generating MVP
-    GLint modelMatLoc = glGetUniformLocation(_shaderProgram, "modelMat");
+    //mandamos la matriz del modelo trasladado al shader para que en el calculo de la iluminacion se le aplique la iluminacion bien
+    GLint modelMatLoc = glGetUniformLocation(_defaultShaderProgram, "modelMat");
     if (modelMatLoc != -1) {
         glUniformMatrix4fv(modelMatLoc, 1, GL_FALSE, glm::value_ptr(model));
     }
@@ -443,8 +419,8 @@ void Window::renderModel()
     //pum dibuja
     glDrawElements(GL_TRIANGLES, _bufferCount, GL_UNSIGNED_INT, 0);
 
-    //limpiamos esto para que imgui no se rompa
-    for (size_t i = 0; i < _activeTextures.size(); ++i) {
+    //hacemos que opengl apunte a todas las cosas por defecto para asegurarnos de no romper nada luego
+    for (int i = 0; i < _activeTextures.size(); ++i) {
         glActiveTexture(GL_TEXTURE0 + (GLenum)i);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
@@ -457,10 +433,15 @@ void Window::setModelToBuffers(const ModelResults& result)
     //reiniciamos la rotacion del modelo al cambiar
     _modelRotationAngle = 0.0f;
 
+    //posicion minima y maxima de la aabb del modelo
     glm::vec3 minBound, maxBound;
+    //vector que guarda los vertices
     std::vector<Vertex> vertices;
+    //vector que guarda los indices de como se unen los verticces
     std::vector<unsigned int> indices;
+    //vector con los paths a las texturas del modelo
     std::vector<std::string> texturePaths;
+
     //esto es porque un fbx puede tener varias meshes y los indices empiezan para cada una en el 0,
     //enotnces necesitamos esto para evitar solapamientos raros
     unsigned int vertexOffset = 0;
@@ -497,7 +478,7 @@ void Window::setModelToBuffers(const ModelResults& result)
         }
     }
 
-    //calculamos el centro de la esfera
+    //calculamos el centro de la aabb
     _modelCenter = (minBound + maxBound) * 0.5f;
     //calculamos el lado mas largo para escalar el  modelo igual en todos los ejes
     float maxDim = std::max({ maxBound.x - minBound.x, maxBound.y - minBound.y, maxBound.z - minBound.z });
@@ -534,7 +515,7 @@ void Window::setModelToBuffers(const ModelResults& result)
         unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
         if (data)
         {
-            //esto permite tener transparencias en base 
+            //esto permite tener transparencias en base al numero de canales
             GLenum format = GL_RGB;
             if (nrChannels == 1)      format = GL_RED;
             else if (nrChannels == 4) format = GL_RGBA;
@@ -557,6 +538,7 @@ void Window::setModelToBuffers(const ModelResults& result)
     }
 
     //bindear buffers
+    //el vao lo que hace es guardar el vbo y el ebo de una forma mucho mas comoda para pasarselo a opengl
     glBindVertexArray(_vao);
 
     //vbo: Datos de los vértices
@@ -567,6 +549,7 @@ void Window::setModelToBuffers(const ModelResults& result)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 
+    //menos mal que me dio por mirar cosas de opengl hace un año y pico, no se como habria hecho todo esto si no
     /**
      * Como se debe interpretar vertex data. Parametros en orden:
      * - Como en el vertex shader el parametro que queremos pasar esta en aPos lo pasamos aqui
@@ -578,21 +561,24 @@ void Window::setModelToBuffers(const ModelResults& result)
      * se puede dejar que sea OpenGL quien defina esta distancia poniendole el valor 0
      * - Offset de donde esta la primera posicion de datos en el buffer (en este caso 0 al estar al principio del array)
      **/
-    GLint posAttrib = glGetAttribLocation(_shaderProgram, "aPos");
+    //indicarle al parametro del shader cada cuanto hay un atributo de posicion en el buffer
+    GLint posAttrib = glGetAttribLocation(_defaultShaderProgram, "aPos");
     glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
     glEnableVertexAttribArray(posAttrib);
 
-    GLint texAttrib = glGetAttribLocation(_shaderProgram, "aTexCoord");
+    //lo mismo pero con las coordenadas de textura
+    GLint texAttrib = glGetAttribLocation(_defaultShaderProgram, "aTexCoord");
     glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
     glEnableVertexAttribArray(texAttrib);
 
-    GLint normAttrib = glGetAttribLocation(_shaderProgram, "aNormal");
+    //lo mismo pero con  las normales
+    GLint normAttrib = glGetAttribLocation(_defaultShaderProgram, "aNormal");
     if (normAttrib != -1) {
         glVertexAttribPointer(normAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
         glEnableVertexAttribArray(normAttrib);
     }
 
-    // unbindeamos para que imgui no se rompa
+    // unbindeamos para que nada se rompa
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -633,6 +619,9 @@ void Window::createPanel(const std::vector<ModelResults>& results)
             buttonPressed = true;
         }
 
+        ImGui::SameLine();
+        ImGui::Checkbox("Visualizar normales", &_visualizeNormals);
+
         //checkboxes para los ejes en los que rota el modelo
         ImGui::Text("Ejes de rotacion");
         ImGui::SameLine();
@@ -645,7 +634,7 @@ void Window::createPanel(const std::vector<ModelResults>& results)
         ImGui::SameLine();
 
         //slider de la velocidad de rotacion
-        ImGui::SetNextItemWidth(_width/7.0);
+        ImGui::SetNextItemWidth(_width/7.0f);
         ImGui::SliderFloat(" Velocidad de rotacion", &_modelRotationSpeed, 0.0, 10.0);
 
         if(ImGui::BeginChild("Desplegables", ImVec2(0.0, 0.0), true))
