@@ -8,7 +8,7 @@
 
 enum ValidationType { 
     None,
-    Prueba1Test,
+    ExistingSceneTest,
     PolygonTest, 
     VertexTest, 
     NormalsTest, 

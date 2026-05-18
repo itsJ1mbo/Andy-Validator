@@ -14,6 +14,7 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\CleanSceneValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\CollidersValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\DimensionsValidation.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\ExistingSceneValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\ImportManager.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\LODValidation.h" />
@@ -22,7 +23,6 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\OverlappingUVValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\PivotValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\PolygonValidation.h" />
-    <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba1Validation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\TexelDensityValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\TransformationsValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\UnitsValidation.h" />
@@ -31,10 +31,10 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\VertexValidation.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\AndyValidator_Core\Prueba1Validation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\CleanSceneValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\CollidersValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\DimensionsValidation.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_FBX\ExistingSceneValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\ImportManager.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\LODValidation.cpp" />

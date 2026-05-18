@@ -25,9 +25,6 @@
     <ClCompile Include="..\..\src\AndyValidator_FBX\PolygonValidation.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_Core\Prueba1Validation.cpp">
-      <Filter>Archivos de código fuente</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\AndyValidator_FBX\TexelDensityValidation.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
@@ -50,6 +47,9 @@
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\AndyValidator_FBX\DimensionsValidation.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\ExistingSceneValidation.cpp">
       <Filter>Archivos de código fuente</Filter>
     </ClCompile>
   </ItemGroup>
@@ -78,9 +78,6 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\PolygonValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba1Validation.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\TexelDensityValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\OverlappingUVValidation.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\ExistingSceneValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
