@@ -44,8 +44,9 @@ bool DimensionsValidation::isTextureValid(FbxSurfaceMaterial* material)
                 int x, y, comp;
                 stbi_info(path, &x, &y, &comp);
 
-                // si ambas dimensiones son potencia de 2 devuelve true
-                return isPowerOfTwo(x) && isPowerOfTwo(y);
+                // si ninguna de las dimensiones son potencia de 2 es invalida
+                if(!isPowerOfTwo(x) || !isPowerOfTwo(y))
+                   return false;
             }
         }
     }
