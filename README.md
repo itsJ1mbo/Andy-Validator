@@ -5,17 +5,17 @@ Software de validacion de modelos 3D de formato FBX para videojuegos
 1. [Instrucciones](#instrucciones)
 2. [Concept](#concept-art)
 3. [Arquitectura](#arquitectura)
-4. [Librerias](#librerias)
-5. [Andy](#andy)
-6. [Terceros](#terceros)
+4. [Librerias](#librerias-libres)
+5. [Terceros](#terceros)
+6. [Andy](#andy)
 
 ## Instrucciones
-### Desgargar ejecutable
+### Descargar ejecutable
 1. Desde la página de Releases descargar la última disponible
 2. Descomprimir el zip y mover el EXE y el CFG a la misma carpeta que los modelos
 3. (Opcional) Modificar los datos del archivo CFG según necesidad
 4. Ejcutar el EXE
-### Compilar desde la fuente
+### Compilar desde el código
 1. Descargar el repositorio
 2. Instalar el FBX SDK
     -  Descargar el instalador del sdk versión 2020.3.9 desde [la web oficial](https://aps.autodesk.com/developer/overview/fbx-sdk)
@@ -146,25 +146,24 @@ struct Config
 ```
 
 ## Librerias
-
-### Ventana
+- [FBX SDK](https://aps.autodesk.com/developer/overview/fbx-sdk)
 - [OpenGL](https://www.opengl.org/)
-- [GLFW](https://github.com/glfw/glfw) - Licencia zlib
-- [DearImGui](https://github.com/ocornut/imgui) - Licencia MIT
-- [MagicEnum](https://github.com/Neargye/magic_enum) - Licencia MIT
-- [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h) - Licencia MIT
+- [GLFW](https://github.com/glfw/glfw)
+- [DearImGui](https://github.com/ocornut/imgui)
+- [MagicEnum](https://github.com/Neargye/magic_enum)
+- [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
+- [glm](https://github.com/g-truc/glm?tab=readme-ov-file)
 
-
-Esto está desactualizado hay como ochenta más
+Esta imagen está desactualizada hay como ochenta más
 ![Cuantas librerias hay en el proyecto?](dependencies.png)
+
+## Terceros
+El ejecutable final contiene el SDK de Autodesk® FBX® de forma estática. El uso de este SDK está sujeto a los términos de licencia de Autodesk. Nuestro código interactúa con este SDK pero es independiente de él.
 
 ## Andy
 Andy
 
 ![Andy](andy.jpeg)
-
-## Terceros
-El ejecutable final contiene el SDK de Autodesk® FBX® de forma estática. El uso de este SDK está sujeto a los términos de licencia de Autodesk. Nuestro código interactúa con este SDK pero es independiente de él.
 
 
 
