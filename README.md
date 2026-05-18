@@ -5,7 +5,7 @@ Software de validacion de modelos 3D de formato FBX para videojuegos.
 1. [Instrucciones](#instrucciones)
 2. [Concept](#concept-art)
 3. [Arquitectura](#arquitectura)
-4. [Librerias](#librerias-libres)
+4. [Librerias](#librerias)
 5. [Terceros](#terceros)
 6. [Andy](#andy)
 
@@ -145,7 +145,7 @@ struct Config
 };
 ```
 
-## Librerias
+## Librerías
 - [FBX SDK](https://aps.autodesk.com/developer/overview/fbx-sdk)
 - [OpenGL](https://www.opengl.org/)
 - [GLFW](https://github.com/glfw/glfw)
