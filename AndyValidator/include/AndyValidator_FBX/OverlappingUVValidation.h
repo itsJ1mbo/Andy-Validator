@@ -2,7 +2,8 @@
 #include "Validation.h"
 #include <vector>
 
-struct UVTriangle {
+struct UVTriangle 
+{
     FbxVector2 v[3];
     int polyIndex; // Para saber a que poligono 3D pertenece
     double minX, minY, maxX, maxY; // bounding box (AABB)

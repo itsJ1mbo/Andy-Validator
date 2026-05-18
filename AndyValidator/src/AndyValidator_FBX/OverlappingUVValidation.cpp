@@ -24,7 +24,6 @@ bool OverlappingUVValidation::checkOverlapping(FbxNode* node)
         std::vector<UVTriangle> triangles;
         gatherUVTriangles(node->GetMesh(), triangles);
 
-        // algoritmo O(N^2) para comprobar choques
         for (size_t i = 0; i < triangles.size(); i++)
         {
             for (size_t j = i + 1; j < triangles.size(); j++)
@@ -138,7 +137,7 @@ bool OverlappingUVValidation::segmentsIntersect(FbxVector2 p1, FbxVector2 q1, Fb
 bool OverlappingUVValidation::pointInTriangle(FbxVector2 pt, FbxVector2 v1, FbxVector2 v2, FbxVector2 v3)
 {
     double d1, d2, d3;
-    bool has_neg, has_pos;
+    bool negativo, positivo;
 
     auto sign = [](FbxVector2 p1, FbxVector2 p2, FbxVector2 p3) {
         return (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1]);
@@ -148,10 +147,10 @@ bool OverlappingUVValidation::pointInTriangle(FbxVector2 pt, FbxVector2 v1, FbxV
     d2 = sign(pt, v2, v3);
     d3 = sign(pt, v3, v1);
 
-    has_neg = (d1 < -0.00001) || (d2 < -0.00001) || (d3 < -0.00001);
-    has_pos = (d1 > 0.00001) || (d2 > 0.00001) || (d3 > 0.00001);
+    negativo = (d1 < -0.00001) || (d2 < -0.00001) || (d3 < -0.00001);
+    positivo = (d1 > 0.00001) || (d2 > 0.00001) || (d3 > 0.00001);
 
-    return !(has_neg && has_pos);
+    return !(negativo && positivo);
 }
 
 bool OverlappingUVValidation::trianglesIntersect(const UVTriangle& t1, const UVTriangle& t2)

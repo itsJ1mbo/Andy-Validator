@@ -20,6 +20,7 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\NamingValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\NormalsValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\OverlappingUVValidation.h" />
+    <ClInclude Include="..\..\include\AndyValidator_FBX\PaddingValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\PivotValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\PolygonValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\Prueba1Validation.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="..\..\src\AndyValidator_FBX\NamingValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\NormalsValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\OverlappingUVValidation.cpp" />
+    <ClCompile Include="..\..\src\AndyValidator_FBX\PaddingValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\PivotValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\PolygonValidation.cpp" />
     <ClCompile Include="..\..\src\AndyValidator_FBX\TexelDensityValidation.cpp" />
