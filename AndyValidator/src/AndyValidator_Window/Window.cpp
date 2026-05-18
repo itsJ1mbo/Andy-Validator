@@ -18,7 +18,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0), _vao(0), _vbo(0), _ebo(0), _defaultShaderProgram(0), _visualizeNormalsShaderProgram(0), _modelRotationAngle(0), _modelRotationSpeed(1.0), _rotX(false), _rotY(true), _rotZ(false), _visualizeNormals(false)
+Window::Window(int width, int height) : _width(width), _height(height), _glfwWindow(nullptr), _collapsed(true), _bufferCount(0), _vao(0), _vbo(0), _ebo(0), _defaultShaderProgram(0), _visualizeNormalsShaderProgram(0), _modelRotationAngle(0), _modelRotationSpeed(1.0), _rotX(false), _rotY(true), _rotZ(false), _visualizeNormals(false), _visualizeWireframe(false)
 {
 
 }
@@ -348,6 +348,11 @@ void Window::renderModel()
     else
         glUseProgram(_defaultShaderProgram);
 
+    if (_visualizeWireframe)
+        glPolygonMode(GL_FRONT, GL_LINE);
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
     //si el modelo tiene texturas las ponemos
     if(!_activeTextures.empty())
     {
@@ -619,8 +624,10 @@ void Window::createPanel(const std::vector<ModelResults>& results)
             buttonPressed = true;
         }
 
-        ImGui::SameLine();
         ImGui::Checkbox("Visualizar normales", &_visualizeNormals);
+        ImGui::SameLine();
+        ImGui::Checkbox("Visualizar wireframe", &_visualizeWireframe);
+
 
         //checkboxes para los ejes en los que rota el modelo
         ImGui::Text("Ejes de rotacion");

@@ -104,5 +104,7 @@ private:
     bool _rotX, _rotY, _rotZ;
     //para controlar si se visualizan las normales
     bool _visualizeNormals;
+    //para controlar si ver el wireframe o no
+    bool _visualizeWireframe;
     //--------------------------------
 };
