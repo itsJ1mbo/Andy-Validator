@@ -3,6 +3,7 @@
 #include <iostream>
 #include <format>
 #include <fstream>
+#include <magicEnum/magic_enum.hpp>
 
 namespace fs = std::filesystem;
 
@@ -38,7 +39,9 @@ void Loader::initDirectory()
 {
     _path = "..\\..\\FBXs";
 
+#if _DEBUG
     std::cout << "Buscando en: " << fs::absolute(_path) << std::endl;
+#endif
 
     if (!fs::exists(_path) || !fs::is_directory(_path))
     {
@@ -97,12 +100,12 @@ void Loader::readConfig(const std::string& path)
         {
 			_cfg.unreal = value == "true";
         }
-        else if (key == "NAMING_NOMENCLATURE")
+        else if (key == "NAMING_CONVENTION")
         {
-            if (value == "UpperCamelCase") _cfg.naming = NamingNomenclature::UpperCamelCase;
-            else if (value == "lowerCamelCase") _cfg.naming = NamingNomenclature::lowerCamelCase;
-            else if (value == "Upper_Snake_Case") _cfg.naming = NamingNomenclature::Upper_Snake_Case;
-            else if (value == "lower_snake_case") _cfg.naming = NamingNomenclature::lower_snake_case;
+            auto naming = magic_enum::enum_cast<NamingNomenclature>(value);
+            if (naming.has_value()) {
+                _cfg.naming = naming.value();
+            }
         }
         else if (key == "TEXEL_DENSITY_TOLERANCE")
         {
@@ -125,18 +128,9 @@ void Loader::createConfig()
         return;
     }
 
-    std::string namingStr = "UpperCamelCase";
-    switch (_cfg.naming)
-    {
-        case NamingNomenclature::UpperCamelCase:   namingStr = "UpperCamelCase"; break;
-        case NamingNomenclature::lowerCamelCase:   namingStr = "lowerCamelCase"; break;
-        case NamingNomenclature::Upper_Snake_Case: namingStr = "Upper_Snake_Case"; break;
-        case NamingNomenclature::lower_snake_case: namingStr = "lower_snake_case"; break;
-    }
-
     file << std::format("MAX_POLYGONS = {}\n", _cfg.polygons);
     file << std::format("UNREAL_ENGINE = {}\n", _cfg.unreal ? "true" : "false");
-    file << std::format("NAMING_CONVENTION = {}\n", namingStr);
+    file << std::format("NAMING_CONVENTION = {}\n", magic_enum::enum_name(_cfg.naming));
     file << std::format("TEXEL_DENSITY_TOLERANCE = {:.2f}\n", _cfg.texelDensityTolerance);
 
     file.close();

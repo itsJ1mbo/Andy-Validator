@@ -1,7 +1,5 @@
 #include "AndyValidator_FBX/PivotValidation.h"
 
-#include <iostream>
-
 void PivotValidation::validate(const FbxScene* fbx, ModelResults& results)
 {
     bool validationResult = validPivot(fbx->GetRootNode());

@@ -1,5 +1,4 @@
 #include "AndyValidator_FBX/TransformationsValidation.h"
-#include <cmath> 
 #include <iostream>
 
 void TransformationsValidation::validate(const FbxScene* fbx, ModelResults& results)

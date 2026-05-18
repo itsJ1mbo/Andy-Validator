@@ -1,6 +1,5 @@
 #include "AndyValidator_FBX/TexelDensityValidation.h"
 #include "AndyValidator_FBX/FBX.h"
-#include <cmath>
 #include <limits>
 #include <vector>
 

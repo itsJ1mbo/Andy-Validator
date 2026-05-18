@@ -99,11 +99,13 @@
     <ClInclude Include="..\..\include\AndyValidator_FBX\VertexValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\OverlappingUVValidation.h" />
     <ClInclude Include="..\..\include\AndyValidator_FBX\CollidersValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\DimensionsValidation.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\OverlappingUVValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
