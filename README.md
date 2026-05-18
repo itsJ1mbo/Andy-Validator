@@ -1,4 +1,4 @@
-# Andy-Validator
+# Andy Validator
 Software de validacion de modelos 3D de formato FBX para videojuegos
 
 ## Índice
@@ -9,18 +9,24 @@ Software de validacion de modelos 3D de formato FBX para videojuegos
 5. [Terceros](#terceros)
 
 ## Instrucciones
-### Instalación del FBX SDK
-1. Descargar el instalador del sdk versión 2020.3.9 desde [la web oficial](https://aps.autodesk.com/developer/overview/fbx-sdk)
-2. Instalarlo en la carpeta dependencies, debería quedar algo como "dependencies/2020.3.9/"  
-
-Recuerdo poner el directorio de trabajo del proyecto principal en $(TargetDir)
+### Desgargar ejecutable
+1. Desde la página de Releases descargar la última disponible
+2. Descomprimir el zip y mover el EXE y el CFG a la misma carpeta que los modelos
+3. (Opcional) Modificar los datos del archivo CFG según necesidad
+4. Ejcutar el EXE
+### Compilar desde la fuente
+1. Descargar el repositorio
+2. Instalar el FBX SDK
+    -  Descargar el instalador del sdk versión 2020.3.9 desde [la web oficial](https://aps.autodesk.com/developer/overview/fbx-sdk)
+    - Instalarlo en la carpeta dependencies de la solución de VS, debería quedar algo como "dependencies/2020.3.9/"  
+3. Abrir la solución y compilar
+4. Mover el binario (EXE) generado a la carpeta de los modelos
+5. (Opcional) crear el archivo validator.cfg en la misma carpeta y configurarlo a gusto
+6. Ejecutar el EXE
 
 ## Concept art
-**AVISO: HE HABALDO CON GUILLE TENER UN BOTON VALIDAR ES ILEGAL SE HACE TODO NADA MAS ABRIR LA APLICACION. NO HAY BOTON**
-### Opcion 1
+### Ventana
 ![Opcion 1](opcion1.png)
-### Opcion 2
-![Opcion 2](opcion2.png)
    
 ## Arquitectura
 ### Window
@@ -35,19 +41,27 @@ class Validation
 public:
 	virtual ~Validation() = default;
 
-	virtual void validate(const FbxScene* fbx, ValidationResults& results) = 0;
+	virtual void validate(const FbxScene* fbx, ModelResults& results) = 0;
 };
 ```
-El FbxScene es el modelo, la libreria los llama escenas pero es un unico modelo. Results es un struct que tendrá un vector de booleanos, uno por cada validacion. Se pasa por referencia porque cada implementacion de validate() pondrá a true el booleano correspondiente a su validación (ValidationType) si el modelo lo cumple (hay un struct por modelo)
+El FbxScene es el modelo, la libreria los llama escenas pero es un unico modelo. ModelResults es un struct que tendrá un vector de ValidationResult, uno por cada validacion. Se pasa por referencia porque cada implementacion de validate() gestionará cada resultado de la validacion (ValidationType y passed) si el modelo lo cumple (hay un struct por modelo)
 ```cpp
 enum ValidationType { None, TestX, TestY /* etc... */};
 
-struct Results
+struct ValidationResult
 {
-	ModelData model; // Para OpenGL
-	std::optional<size_t> index; // Para almacenamiento
+    ValidationType type;
+    std::string description;
+    bool passed;
+};
 
-	std::vector<std::pair<ValidationType, bool>> validations;
+struct ModelResults
+{
+    std::optional<size_t> index;
+    std::string fileName;
+    ModelData model;
+    bool allTestsPassed = true;
+    std::vector<ValidationResult> validations;
 };
 ```
 El ValidatorManager es el encargado de iterar por cada modelo llamando a todos los validate() de cada uno. Guardará los resultados de la validacion en un vector que leerá el Core para mostrarlos en la ventana. 
@@ -57,7 +71,7 @@ class ValidatorManager
 public:
     ValidatorManager();
 
-    void runValidations(const FbxScene* scene, Results& results) const;
+    void runValidations(const FbxScene* scene, ModelResults& results) const;
 
 private:
     std::vector<std::unique_ptr<Validation>> _validations;
@@ -118,6 +132,8 @@ struct Config
 {
     int polygons = 10000;
     bool unreal = false;
+    NamingNomenclature naming = NamingNomenclature::UpperCamelCase;
+    double texelDensityTolerance = 1.30;
 };
 ```
 
