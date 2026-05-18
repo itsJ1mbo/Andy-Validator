@@ -8,7 +8,7 @@ void VertexValidation::validate(const FbxScene* fbx, ModelResults& results)
 
     ValidationResult res;
     res.type = VertexTest;
-    res.description = "Comprueba si las caras del modelo no superan los 4 vertices";
+    res.description = "Comprueba si las caras del modelo no superan los 3 vertices";
     res.passed = validationResult;
 
     results.validations.emplace_back(res);
