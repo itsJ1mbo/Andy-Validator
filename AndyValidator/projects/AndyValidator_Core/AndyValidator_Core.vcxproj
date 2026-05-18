@@ -103,7 +103,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>AndyValidator_Window.lib;opengl32.lib;glfw3_mt.lib;libfbxsdk-mt.lib;libxml2-mt.lib;alembic-mt.lib;zlib-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)dependencies\glfw\;$(SolutionDir)dependencies\2020.3.9\lib\x64\release\;$(SolutionDir)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

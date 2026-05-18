@@ -10,9 +10,6 @@
     <ClCompile Include="..\..\src\AndyValidator_FBX\DimensionsValidation.cpp">
       <Filter>Archivos de codigo fuente</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AndyValidator_FBX\ExistingSceneValidation.cpp">
-      <Filter>Archivos de codigo fuente</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\AndyValidator_FBX\FBX.cpp">
       <Filter>Archivos de codigo fuente</Filter>
     </ClCompile>
@@ -55,6 +52,9 @@
     <ClCompile Include="..\..\src\AndyValidator_FBX\VertexValidation.cpp">
       <Filter>Archivos de codigo fuente</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\AndyValidator_FBX\EmptySceneValidation.cpp">
+      <Filter>Archivos de codigo fuente</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AndyValidator_FBX\CleanSceneValidation.h">
@@ -64,9 +64,6 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\DimensionsValidation.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\AndyValidator_FBX\ExistingSceneValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\FBX.h">
@@ -112,6 +109,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\AndyValidator_FBX\VertexValidation.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\AndyValidator_FBX\EmptySceneValidation.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

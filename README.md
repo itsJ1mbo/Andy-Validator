@@ -5,8 +5,9 @@ Software de validacion de modelos 3D de formato FBX para videojuegos
 1. [Instrucciones](#instrucciones)
 2. [Concept](#concept-art)
 3. [Arquitectura](#arquitectura)
-4. [Librerias](#clibrerias)
-5. [Terceros](#terceros)
+4. [Librerias](#librerias)
+5. [Andy](#andy)
+6. [Terceros](#terceros)
 
 ## Instrucciones
 ### Desgargar ejecutable
@@ -156,6 +157,11 @@ struct Config
 
 Esto está desactualizado hay como ochenta más
 ![Cuantas librerias hay en el proyecto?](dependencies.png)
+
+## Andy
+Andy
+
+![Andy](andy.jpeg)
 
 ## Terceros
 El ejecutable final contiene el SDK de Autodesk® FBX® de forma estática. El uso de este SDK está sujeto a los términos de licencia de Autodesk. Nuestro código interactúa con este SDK pero es independiente de él.

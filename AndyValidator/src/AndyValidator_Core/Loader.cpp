@@ -37,7 +37,7 @@ void Loader::read()
 
 void Loader::initDirectory()
 {
-    _path = "..\\..\\FBXs";
+    _path = ".\\";
 
 #if _DEBUG
     std::cout << "Buscando en: " << fs::absolute(_path) << std::endl;
