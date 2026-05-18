@@ -1,5 +1,5 @@
 # Andy Validator
-Software de validacion de modelos 3D de formato FBX para videojuegos
+Software de validacion de modelos 3D de formato FBX para videojuegos.
 
 ## Índice
 1. [Instrucciones](#instrucciones)
@@ -10,20 +10,20 @@ Software de validacion de modelos 3D de formato FBX para videojuegos
 6. [Terceros](#terceros)
 
 ## Instrucciones
-### Desgargar ejecutable
-1. Desde la página de Releases descargar la última disponible
-2. Descomprimir el zip y mover el EXE y el CFG a la misma carpeta que los modelos
-3. (Opcional) Modificar los datos del archivo CFG según necesidad
-4. Ejcutar el EXE
+### Descargar ejecutable
+1. Desde la página de Releases descargar la última disponible.
+2. Descomprimir el zip y mover el EXE y el CFG a la misma carpeta que los modelos.
+3. (Opcional) Modificar los datos del archivo CFG según necesidad.
+4. Ejcutar el EXE.
 ### Compilar desde la fuente
-1. Descargar el repositorio
-2. Instalar el FBX SDK
-    -  Descargar el instalador del sdk versión 2020.3.9 desde [la web oficial](https://aps.autodesk.com/developer/overview/fbx-sdk)
-    - Instalarlo en la carpeta dependencies de la solución de VS, debería quedar algo como "dependencies/2020.3.9/"  
-3. Abrir la solución y compilar
-4. Mover el binario (EXE) generado a la carpeta de los modelos
-5. (Opcional) crear el archivo validator.cfg en la misma carpeta y configurarlo a gusto
-6. Ejecutar el EXE
+1. Descargar el repositorio.
+2. Instalar el FBX SDK.
+    - Descargar el instalador del sdk versión 2020.3.9 desde [la web oficial](https://aps.autodesk.com/developer/overview/fbx-sdk).
+    - Instalarlo en la carpeta dependencies de la solución de VS, debería quedar algo como "dependencies/2020.3.9/".
+3. Abrir la solución y compilar.
+4. Mover el binario (EXE) generado a la carpeta de los modelos.
+5. (Opcional) Crear el archivo validator.cfg en la misma carpeta y configurarlo a gusto.
+6. Ejecutar el EXE.
 
 ## Concept art
 ### Ventana
@@ -31,8 +31,8 @@ Software de validacion de modelos 3D de formato FBX para videojuegos
    
 ## Arquitectura
 ### Window
-Proyecto que crea y gestiona todo lo relacionado con la ventana y está únicamente formado por la clase window.
-Esta clase utiliza GLFW para la ventana y el input, OpenGL para el renderizado de los modelos y DearImGui para los paneles y botones. Además, también utiliza otras librerias auxiliares como GLM para las matemáticas, stb_image para cargar las texturas y magic_enum para convertir los enums a strings.
+Proyecto que crea y gestiona todo lo relacionado con la ventana y está únicamente formado por la clase `Window`.
+Esta clase utiliza GLFW para la ventana y el input, OpenGL para el renderizado de los modelos y DearImGui para los paneles y botones. Además, también utiliza otras librerias auxiliares como GLM para las matemáticas, `stb_image` para cargar las texturas y `magic_enum` para convertir los `enum` a `string`.
 
 Después de la inicialización, cada frame la ventana recibe un vector con los resultados de las validaciones que hayan sido realizadas y hace lo siguiente: 
   - Procesa los inputs que haya usado el usuario, aunque en nuestro caso solo se trata de cerrar la ventana, pero podría expandirse a controles de la cámara del visualizador por ejemplo.
@@ -42,7 +42,7 @@ Después de la inicialización, cada frame la ventana recibe un vector con los r
 ### FBX
 Proyecto que realiza la validacion a traves del sdk de autodesk. El punto de entrada inicializa la libreria y gestiona el hilo secundario que corre la importacion y validaciones de cada modelo.
 #### Validaciones
-La clase Validation es virtual y de ella heredara cada tipo de validacion distinta, implementando el metodo validate() segun cada caso
+La clase `Validation` es virtual y de ella heredara cada tipo de validacion distinta, implementando el metodo `validate()` segun cada caso.
 ```cpp
 class Validation
 {
@@ -52,7 +52,7 @@ public:
 	virtual void validate(const FbxScene* fbx, ModelResults& results) = 0;
 };
 ```
-El FbxScene es el modelo, la libreria los llama escenas pero es un unico modelo. ModelResults es un struct que tendrá un vector de ValidationResult, uno por cada validacion. Se pasa por referencia porque cada implementacion de validate() gestionará cada resultado de la validacion (ValidationType y passed) si el modelo lo cumple (hay un struct por modelo)
+El `FbxScene` es el modelo, la librería los llama escenas pero es un único modelo. `ModelResults` es un `struct` que tendrá un vector de `ValidationResult`, uno por cada validación. Se pasa por referencia porque cada implementación de `validate()` gestionará cada resultado de la validación (`ValidationType` y `passed`) si el modelo lo cumple (hay un `struct` por modelo).
 ```cpp
 enum ValidationType { None, TestX, TestY /* etc... */};
 
@@ -72,7 +72,7 @@ struct ModelResults
     std::vector<ValidationResult> validations;
 };
 ```
-El ValidatorManager es el encargado de iterar por cada modelo llamando a todos los validate() de cada uno. Guardará los resultados de la validacion en un vector que leerá el Core para mostrarlos en la ventana. 
+El `ValidatorManager` es el encargado de iterar por cada modelo llamando a todos los `validate()` de cada uno. Guardará los resultados de la validación en un vector que leerá el Core para mostrarlos en la ventana. 
 ```cpp
 class ValidatorManager 
 {
@@ -85,8 +85,8 @@ private:
     std::vector<std::unique_ptr<Validation>> _validations;
 };
 ```
-#### Importacion
-ImportManager importa cada modelo a una FbxScene que luego FBX pasa al ValidatorManager, tras las validaciones el ImportManager traduce los datos del modelo a una estructura que OpenGL pueda entender
+#### Importación
+`ImportManager` importa cada modelo a una `FbxScene` que luego FBX pasa al `ValidatorManager`, tras las validaciones el `ImportManager` traduce los datos del modelo a una estructura que OpenGL pueda entender.
 ```cpp
 struct Vertex 
 {
@@ -114,7 +114,7 @@ struct ModelData
 };
 ```
 ### Core
-Proyecto que gestiona la aplicacion y su bucle. Llama al render y lee los modelos que luego FBX carga, gestiona los resultados devueltos por el proyecto FBX para mostrarlos en la ventana.
+Proyecto que gestiona la aplicación y su bucle. Llama al `render` y lee los modelos que luego FBX carga, gestiona los resultados devueltos por el proyecto FBX para mostrarlos en la ventana.
 ```cpp
 void Application::run()
 {
@@ -134,7 +134,7 @@ void Application::run()
     }
 }
 ```
-Lee de la misma carpeta un archivo validator.cfg que tiene datos dependientes del proyecto específico. El usuario debe cambiarlo segun la necesidad. Si no encunetra el archivo lo crea con valores por defecto
+Lee de la misma carpeta un archivo `validator.cfg` que tiene datos dependientes del proyecto específico. El usuario debe cambiarlo segun la necesidad. Si no encuentra el archivo, lo crea con valores por defecto.
 ```cpp
 struct Config
 {
@@ -145,7 +145,7 @@ struct Config
 };
 ```
 
-## Librerias
+## Librerías
 
 ### Ventana
 - [OpenGL](https://www.opengl.org/)
